@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">File Browser</string>
+    <string name="cut">Cut</string>
+    <string name="refresh">Refresh</string>
+    <string name="paste">Paste</string>
+    <string name="copy">Copy</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="more">More</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="share">Share</string>
+    <string name="new_folder">New Folder</string>
+    <string name="root">Root</string>
+    <string name="back">Back</string>
+    <string name="show_hidden_folders">Show Hidden Folders</string>
+    <string name="properties">Properties</string>
+    <string name="internal_storage">Int</string>
+    <string name="external_storage">Ext</string>
+</resources>
