@@ -114,8 +114,5 @@ public class Permissions extends AppCompatActivity {
         }
     }
 
-    String [] getRequestablePermissions(String []permissions) {
-
-    }
 }
 

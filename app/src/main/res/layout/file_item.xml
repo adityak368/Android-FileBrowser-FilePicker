@@ -77,4 +77,15 @@ android:padding="6dip" >
     android:gravity="center_vertical"
     android:textSize="16sp" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignRight="@id/filename"
+        android:visibility="visible"
+        android:clickable="true"
+        android:focusable="false"
+        android:longClickable="false"
+        android:id="@+id/selectFile"/>
+
 </RelativeLayout>

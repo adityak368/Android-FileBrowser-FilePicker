@@ -17,4 +17,8 @@
     <string name="properties">Properties</string>
     <string name="internal_storage">Int</string>
     <string name="external_storage">Ext</string>
+    <string name="cancel">Cancel</string>
+    <string name="selectall">Select All</string>
+    <string name="showfoldersize">Show Folder Size</string>
+    <string name="showhiddenfolder">Show Hidden Folders</string>
 </resources>
