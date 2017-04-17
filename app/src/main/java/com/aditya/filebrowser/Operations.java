@@ -1,47 +1,68 @@
 package com.aditya.filebrowser;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.aditya.filebrowser.models.FileItem;
+import com.aditya.filebrowser.utils.UIUtils;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by adik on 9/27/2015.
  */
 public class Operations {
 
-    static ArrayList<String> files = new ArrayList<>();
-
-    public static void resetFiles() {
-        files.clear();
+    public enum FILE_OPERATIONS {
+        CUT,
+        COPY,
+        NONE
     }
 
-    public static String getAction() {
-        return Action;
+    private List<FileItem> selectedFiles;
+
+    public void resetOperation() {
+        if(selectedFiles!=null)
+            selectedFiles.clear();
+        selectedFiles  = null;
+        setOperation(FILE_OPERATIONS.NONE);
     }
 
-    public static void setAction(String action) {
-        Action = action;
+    public FILE_OPERATIONS getOperation() {
+        return currOperation;
     }
 
-    static String Action;
-
-    public static ArrayList<String> getFiles() {
-        return files;
+    public void setOperation(FILE_OPERATIONS operationn) {
+        this.currOperation = operationn;
     }
 
-    public static void addFile(String path) {
-        files.add(path);
+    private FILE_OPERATIONS currOperation;
+
+    public List<FileItem> getSelectedFiles() {
+        return selectedFiles;
+    }
+
+    public void setSelectedFiles(List<FileItem> selectedItems) {
+        this.selectedFiles = selectedItems;
+        UIUtils.ShowToast("Selected "+selectedItems.size()+" items",mContext);
     }
 
     private static Operations op;
 
-    private Operations()
-    {
+    private Context mContext;
 
+    private Operations(Context mContext)
+    {
+        this.mContext = mContext;
+        this.currOperation = FILE_OPERATIONS.NONE;
     }
-    public static Operations getInstance()
+
+    public static Operations getInstance(Context mContext)
     {
         if(op==null)
         {
-            op = new Operations();
+            op = new Operations(mContext);
         }
         return op;
     }

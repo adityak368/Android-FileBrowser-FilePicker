@@ -71,9 +71,6 @@ public class Permissions extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Bundle b=this.getIntent().getExtras();
         String[] permissions = b.getStringArray(Constants.APP_PREMISSION_KEY);
-        for(int i=0;i<permissions.length;i++) {
-            Log.e("AAA",permissions[i]);
-        }
         requestPermissions(permissions);
     }
 

@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="navColor">#515151</color>
+    <color name="actionModeToolbar">#778cff</color>
 </resources>

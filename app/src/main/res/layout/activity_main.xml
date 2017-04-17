@@ -68,4 +68,5 @@
         android:layout_alignParentBottom="true"
         app:bb_tabXmlResource="@xml/bottom_nav_items"
         android:id="@+id/bottom_navigation"/>
+
 </RelativeLayout>

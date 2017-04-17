@@ -21,4 +21,17 @@
     <string name="selectall">Select All</string>
     <string name="showfoldersize">Show Folder Size</string>
     <string name="showhiddenfolder">Show Hidden Folders</string>
+
+    <string-array name="filter_options">
+        <item>Files</item>
+        <item>Folders</item>
+        <item>All</item>
+    </string-array>
+
+    <string-array name="sort_options">
+        <item>Name</item>
+        <item>Size</item>
+        <item>Last Modified</item>
+    </string-array>
+
 </resources>

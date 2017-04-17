@@ -28,6 +28,18 @@ import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
+    public void selectAll() {
+        for(int i=0;i<fileList.size();i++) {
+            fileList.get(i).setSelected(true);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void selectItem(int position) {
+        fileList.get(position).setSelected(true);
+        notifyDataSetChanged();
+    }
+
     public enum CHOICE_MODE {
         SINGLE_CHOICE,
         MULTI_CHOICE
@@ -61,6 +73,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     public void setChoiceMode(CHOICE_MODE mode) {
         this.currMode = mode;
+        if(mode==CHOICE_MODE.SINGLE_CHOICE)
+            for(FileItem item : fileList) {
+                item.setSelected(false);
+            }
     }
 
     public CHOICE_MODE getChoiceMode() {
@@ -90,7 +106,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         holder.fileName.setText(f.getName() + children);
         try {
             Date d = new Date(f.lastModified());
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            SimpleDateFormat formatter = new SimpleDateFormat(Constants.DATE_FORMAT);
             String fileSize = "";
             if(AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE,mContext).equalsIgnoreCase("true")) {
                 if (f.isDirectory()) {
@@ -110,6 +126,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                     fileList.get(position).setSelected(isChecked);
                 }
             });
+            holder.selectcb.setChecked(fileList.get(position).isSelected());
         } else {
             holder.selectcb.setVisibility(View.GONE);
         }

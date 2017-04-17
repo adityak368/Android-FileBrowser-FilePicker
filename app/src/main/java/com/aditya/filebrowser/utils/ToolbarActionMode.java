@@ -6,8 +6,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.aditya.filebrowser.MainActivity;
+import com.aditya.filebrowser.Operations;
 import com.aditya.filebrowser.R;
 import com.aditya.filebrowser.adapters.CustomAdapter;
+import com.aditya.filebrowser.models.FileItem;
+
+import java.util.List;
 
 /**
  * Created by Aditya on 4/15/2017.
@@ -50,18 +54,30 @@ public class ToolbarActionMode implements ActionMode.Callback{
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        List<FileItem> selectedItems = mAdapter.getSelectedItems();;
         switch (item.getItemId()) {
             case R.id.action_properties:
+                activity.getIo().getProperties(selectedItems);
                 mode.finish();
                 break;
             case R.id.action_share:
+                activity.getIo().shareMultipleFiles(selectedItems);
                 mode.finish();//Finish action mode
                 break;
             case R.id.action_rename:
+                if(selectedItems.size()!=1){
+                    UIUtils.ShowToast("Please select a single item",activity);
+                    return false;
+                }
+                if (!selectedItems.get(0).getFile().canWrite()) {
+                    UIUtils.ShowToast("No write permission available", activity);
+                    return false;
+                }
+                activity.getIo().renameFile(selectedItems.get(0));
                 mode.finish();//Finish action mode
                 break;
             case R.id.action_selectall:
-                mode.finish();
+                mAdapter.selectAll();
                 break;
 
         }

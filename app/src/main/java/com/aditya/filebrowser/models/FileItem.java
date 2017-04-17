@@ -1,6 +1,6 @@
 package com.aditya.filebrowser.models;
 
-import com.aditya.filebrowser.Interfaces.ITrackSelection;
+import com.aditya.filebrowser.interfaces.ITrackSelection;
 
 import java.io.File;
 
