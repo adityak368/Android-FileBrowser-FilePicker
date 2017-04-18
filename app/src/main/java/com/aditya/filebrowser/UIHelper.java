@@ -2,26 +2,29 @@ package com.aditya.filebrowser;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 
+import com.aditya.filebrowser.interfaces.OnChangeDirectoryListener;
 import com.aditya.filebrowser.utils.UIUtils;
-import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 
 /**
  * Created by Aditya on 4/16/2017.
  */
 public class UIHelper {
 
-    MainActivity mActivity;
+    OnChangeDirectoryListener mOnChangeDirectoryListener;
+    Context mContext;
 
-    UIHelper(MainActivity activity) {
-        this.mActivity = activity;
+    UIHelper(Context mContext,OnChangeDirectoryListener mOnChangeDirectoryListener) {
+        this.mOnChangeDirectoryListener = mOnChangeDirectoryListener;
+        this.mContext = mContext;
     }
 
     Runnable updateRunner() {
         return new Runnable() {
             @Override
             public void run() {
-                mActivity.update();
+                    mOnChangeDirectoryListener.updateUI(null,true);
             }
         };
     }
@@ -30,8 +33,8 @@ public class UIHelper {
         return new Runnable() {
             @Override
             public void run() {
-                UIUtils.ShowToast(msg,mActivity);
-                mActivity.update();
+                UIUtils.ShowToast(msg,mContext);
+                mOnChangeDirectoryListener.updateUI(null,true);
             }
         };
     }

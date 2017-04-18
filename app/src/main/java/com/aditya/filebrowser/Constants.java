@@ -13,7 +13,31 @@ import java.util.List;
  */
 public class Constants {
 
+    public enum FILTER_OPTIONS {
+        FILES,
+        FOLDER,
+        ALL
+    }
+
+    public enum SORT_OPTIONS {
+        NAME,
+        SIZE,
+        LAST_MODIFIED
+    }
+
+    public enum APP_MODE {
+        FILE_BROWSER,
+        FILE_CHOOSER
+    }
+
+    public enum CHOICE_MODE {
+        SINGLE_CHOICE,
+        MULTI_CHOICE
+    }
+
     public static final String APP_PREMISSION_KEY = "APP_PERMISSIONS";
+    public static final String FILE_SELECTED_HANDLER = "FILE_SELECTED_HANDLER";
+    public static final String SELECTED_ITEMS = "SELECTED_ITEMS";
     public static final String [] APP_PREMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final String INTERNALSTORAGE = "Internal Storage";

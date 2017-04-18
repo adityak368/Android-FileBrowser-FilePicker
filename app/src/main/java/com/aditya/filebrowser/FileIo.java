@@ -1,5 +1,6 @@
 package com.aditya.filebrowser;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,13 +9,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 
 import com.aditya.filebrowser.adapters.CustomAdapter;
+import com.aditya.filebrowser.interfaces.ContextSwitcher;
 import com.aditya.filebrowser.interfaces.FuncPtr;
+import com.aditya.filebrowser.interfaces.OnChangeDirectoryListener;
 import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.UIUtils;
-import com.beardedhen.androidbootstrap.BootstrapProgressBar;
 
 import org.apache.commons.io.FileUtils;
 
@@ -32,12 +33,12 @@ import java.util.concurrent.Executors;
 public class FileIO {
 
     ExecutorService executor;
-    MainActivity mActivity;
+    Activity mActivity;
     UIHelper helper;
 
-    FileIO (final MainActivity mActivity) {
-        this.mActivity  = mActivity;
-        helper = new UIHelper(mActivity);
+    FileIO (Activity mActivity, OnChangeDirectoryListener mChangeDirectoryListener) {
+        this.mActivity = mActivity;
+        helper = new UIHelper(mActivity,mChangeDirectoryListener);
         executor  = Executors.newFixedThreadPool(1);
     }
 
@@ -95,8 +96,6 @@ public class FileIO {
                                     }
                                 }
                             });
-
-                            mActivity.switchMode(CustomAdapter.CHOICE_MODE.SINGLE_CHOICE);
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

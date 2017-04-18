@@ -64,13 +64,13 @@ public class UIUtils {
 		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	}
 
-	public static void showRadioButtonDialog(Activity mActivity, String[] options, String title, final RadioGroup.OnCheckedChangeListener listener) {
+	public static void showRadioButtonDialog(Context mContext, String[] options, String title, final RadioGroup.OnCheckedChangeListener listener) {
 
-		LayoutInflater inflater = (LayoutInflater)mActivity.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater)mContext.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.filter_options, null);
 
 		// custom dialog
-		final Dialog dialog = new AlertDialog.Builder(mActivity)
+		final Dialog dialog = new AlertDialog.Builder(mContext)
 				.setTitle(title)
 				.setView(v)
 				.create();
@@ -78,7 +78,7 @@ public class UIUtils {
 		RadioGroup rg = (RadioGroup) v.findViewById(R.id.filter_group);
 		BootstrapButton okButton = (BootstrapButton) v.findViewById(R.id.okbutton);
 		for(int i=0;i<options.length;i++){
-			RadioButton rb=new RadioButton(mActivity); // dynamically creating RadioButton and adding to RadioGroup.
+			RadioButton rb=new RadioButton(mContext); // dynamically creating RadioButton and adding to RadioGroup.
 			rb.setText(options[i]);
 			rb.setId(i);
 			rg.addView(rb);
@@ -103,13 +103,13 @@ public class UIUtils {
 	}
 
 
-	public static void showEditTextDialog(Activity mActivity, String title, String initialText, final FuncPtr functionToBeRun) {
+	public static void showEditTextDialog(Context mContext, String title, String initialText, final FuncPtr functionToBeRun) {
 
-		LayoutInflater inflater = (LayoutInflater)mActivity.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater)mContext.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.dialog_with_text, null);
 
 		// custom dialog
-		final Dialog dialog = new AlertDialog.Builder(mActivity)
+		final Dialog dialog = new AlertDialog.Builder(mContext)
 				.setTitle(title)
 				.setView(v)
 				.create();

@@ -40,13 +40,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         notifyDataSetChanged();
     }
 
-    public enum CHOICE_MODE {
-        SINGLE_CHOICE,
-        MULTI_CHOICE
-    }
-
     private List<FileItem> fileList;
-    private CHOICE_MODE currMode;
+    private Constants.CHOICE_MODE currMode;
     private Context mContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -67,19 +62,19 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     public CustomAdapter(List<FileItem> fileList,Context mContext) {
         this.fileList = fileList;
-        this.currMode = CHOICE_MODE.SINGLE_CHOICE;
+        this.currMode = Constants.CHOICE_MODE.SINGLE_CHOICE;
         this.mContext = mContext;
     }
 
-    public void setChoiceMode(CHOICE_MODE mode) {
+    public void setChoiceMode(Constants.CHOICE_MODE mode) {
         this.currMode = mode;
-        if(mode==CHOICE_MODE.SINGLE_CHOICE)
+        if(mode== Constants.CHOICE_MODE.SINGLE_CHOICE)
             for(FileItem item : fileList) {
                 item.setSelected(false);
             }
     }
 
-    public CHOICE_MODE getChoiceMode() {
+    public Constants.CHOICE_MODE getChoiceMode() {
         return this.currMode;
     }
 
@@ -119,7 +114,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         } catch (Exception e) {
 
         }
-        if(getChoiceMode()==CHOICE_MODE.MULTI_CHOICE) {
+        if(getChoiceMode()== Constants.CHOICE_MODE.MULTI_CHOICE) {
             holder.selectcb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -139,12 +134,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     public List<FileItem> getSelectedItems() {
         List<FileItem> selectedItems = new ArrayList<FileItem>();
-        if(getChoiceMode()==CHOICE_MODE.MULTI_CHOICE) {
+        if(getChoiceMode()== Constants.CHOICE_MODE.MULTI_CHOICE) {
             for(FileItem item : fileList) {
                 if(item.isSelected())
                     selectedItems.add(item);
             }
         }
         return selectedItems;
+    }
+
+    public FileItem getItemAt(int position) {
+        return fileList.get(position);
     }
 }

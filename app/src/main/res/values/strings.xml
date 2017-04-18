@@ -21,6 +21,7 @@
     <string name="selectall">Select All</string>
     <string name="showfoldersize">Show Folder Size</string>
     <string name="showhiddenfolder">Show Hidden Folders</string>
+    <string name="chooseitems">Choose Items</string>
 
     <string-array name="filter_options">
         <item>Files</item>
