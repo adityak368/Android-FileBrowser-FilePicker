@@ -124,16 +124,14 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_showfoldersizes: {
+            if(item.getItemId()==R.id.action_showfoldersizes) {
                 if (AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE, mContext).equalsIgnoreCase("true"))
                     AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "false", mContext);
                 else
                     AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "true", mContext);
                 updateUI(null,false);
             }
-            break;
-            case R.id.action_newfolder:  {
+            else if(item.getItemId()==R.id.action_newfolder)  {
                 UIUtils.showEditTextDialog(this, "Folder Name", "" , new FuncPtr(){
                     @Override
                     public void execute(final String val) {
@@ -146,8 +144,7 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
                 });
                 updateUI(null,true);
             }
-            break;
-            case R.id.action_paste: {
+            else if(item.getItemId()==R.id.action_paste) {
                 if (op.getOperation() == Operations.FILE_OPERATIONS.NONE) {
                     UIUtils.ShowToast("No operation selected", mContext);
                     return false;
@@ -162,8 +159,6 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
                     UIUtils.ShowToast("No Write permissions for the paste directory",mContext);
                 updateUI(null,true);
             }
-            break;
-        }
         return false;
     }
 

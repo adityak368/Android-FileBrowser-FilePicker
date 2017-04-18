@@ -126,15 +126,12 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_showfoldersizes: {
+        if(item.getItemId()==R.id.action_showfoldersizes) {
                 if (AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE, mContext).equalsIgnoreCase("true"))
                     AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "false", mContext);
                 else
                     AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "true", mContext);
                 updateUI(null,false);
-            }
-            break;
         }
         return false;
     }

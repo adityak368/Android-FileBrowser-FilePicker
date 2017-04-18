@@ -59,72 +59,70 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
     }
 
     private void handleTabChange(int tabId) {
-        switch (tabId) {
-            case R.id.menu_back:
+
+            if(tabId==R.id.menu_back) {
                 mNavigationHelper.navigateBack();
-                break;
-            case R.id.menu_internal_storage:
+            }
+            else if(tabId==R.id.menu_internal_storage) {
                 mNavigationHelper.navigateToInternalStorage();
-                break;
-            case R.id.menu_external_storage:
+            }
+            else if(tabId==R.id.menu_external_storage) {
                 mNavigationHelper.navigateToExternalStorage();
-                break;
-            case R.id.menu_refresh:
-                mOnChangeDirectoryListener.updateUI(null,true);
-                break;
-            case R.id.menu_filter:
+            }
+            else if(tabId==R.id.menu_refresh) {
+                mOnChangeDirectoryListener.updateUI(null, true);
+            }
+            else if(tabId==R.id.menu_filter) {
                 UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.filter_options), "Filter Only", new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int position) {
                         mNavigationHelper.filter(Constants.FILTER_OPTIONS.values()[position]);
                     }
                 });
-                break;
-            case R.id.menu_sort:
+            }
+            else if(tabId==R.id.menu_sort) {
                 UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.sort_options), "Sort By", new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int position) {
                         mNavigationHelper.sortBy(Constants.SORT_OPTIONS.values()[position]);
                     }
                 });
-                break;
-            case R.id.menu_delete:
+            }
+            else if(tabId==R.id.menu_delete) {
                 List<FileItem> selectedItems = mAdapter.getSelectedItems();
-                if(io!=null) {
+                if (io != null) {
                     io.deleteItems(selectedItems);
                     mContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
                 }
-                break;
-            case R.id.menu_copy:
-                if(op!=null) {
+            }
+            else if(tabId==R.id.menu_copy) {
+                if (op != null) {
                     op.setOperation(Operations.FILE_OPERATIONS.COPY);
                     op.setSelectedFiles(mAdapter.getSelectedItems());
                     mContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
                 }
-                break;
-            case R.id.menu_cut:
-                if(op!=null) {
+            }
+            else if(tabId==R.id.menu_cut) {
+                if (op != null) {
                     op.setOperation(Operations.FILE_OPERATIONS.CUT);
                     op.setSelectedFiles(mAdapter.getSelectedItems());
                     mContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
                 }
-                break;
-            case R.id.menu_chooseitems:
+            }
+            else if(tabId==R.id.menu_chooseitems) {
                 {
                     List<FileItem> selItems = getmAdapter().getSelectedItems();
                     ArrayList<Uri> chosenItems = new ArrayList<>();
-                    for(int i=0;i<selItems.size();i++) {
+                    for (int i = 0; i < selItems.size(); i++) {
                         chosenItems.add(Uri.fromFile(selItems.get(i).getFile()));
                     }
                     mContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
                     Intent data = new Intent();
-                    data.putParcelableArrayListExtra(Constants.SELECTED_ITEMS,chosenItems);
+                    data.putParcelableArrayListExtra(Constants.SELECTED_ITEMS, chosenItems);
                     mActivity.setResult(Activity.RESULT_OK, data);
                     mActivity.finish();
                 }
-                break;
-            default:
-        }
+            }
     }
 
     public CustomAdapter getmAdapter() {

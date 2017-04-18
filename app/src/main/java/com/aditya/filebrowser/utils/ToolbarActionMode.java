@@ -61,33 +61,30 @@ public class ToolbarActionMode implements ActionMode.Callback{
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         List<FileItem> selectedItems = mAdapter.getSelectedItems();;
-        switch (item.getItemId()) {
-            case R.id.action_properties:
-                if(io!=null)
-                    io.getProperties(selectedItems);
-                mode.finish();
-                break;
-            case R.id.action_share:
-                if(io!=null)
-                    io.shareMultipleFiles(selectedItems);
-                mode.finish();//Finish action mode
-                break;
-            case R.id.action_rename:
-                if(selectedItems.size()!=1){
-                    UIUtils.ShowToast("Please select a single item",mContext);
-                    return false;
-                }
-                if (!selectedItems.get(0).getFile().canWrite()) {
-                    UIUtils.ShowToast("No write permission available", mContext);
-                    return false;
-                }
-                io.renameFile(selectedItems.get(0));
-                mode.finish();//Finish action mode
-                break;
-            case R.id.action_selectall:
-                mAdapter.selectAll();
-                break;
-
+        if(item.getItemId()==R.id.action_properties) {
+            if (io != null)
+                io.getProperties(selectedItems);
+            mode.finish();
+        }
+        else if(item.getItemId()==R.id.action_share) {
+            if (io != null)
+                io.shareMultipleFiles(selectedItems);
+            mode.finish();//Finish action mode
+        }
+        else if(item.getItemId()==R.id.action_rename) {
+            if (selectedItems.size() != 1) {
+                UIUtils.ShowToast("Please select a single item", mContext);
+                return false;
+            }
+            if (!selectedItems.get(0).getFile().canWrite()) {
+                UIUtils.ShowToast("No write permission available", mContext);
+                return false;
+            }
+            io.renameFile(selectedItems.get(0));
+            mode.finish();//Finish action mode
+        }
+        else if(item.getItemId()==R.id.action_selectall) {
+            mAdapter.selectAll();
         }
         return false;
     }
