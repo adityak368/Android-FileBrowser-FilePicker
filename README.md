@@ -2,6 +2,21 @@
 
 A FileBrowser / FileChooser for Android that you can integrate to your app to browse/select files from internal/external storage.
 
+# Using Maven
+``` xml
+<dependency>
+  <groupId>com.adityak</groupId>
+  <artifactId>browsemyfiles</artifactId>
+  <version>1.1</version>
+  <type>pom</type>
+</dependency>
+```
+# In build.gradle
+```
+compile 'com.adityak:browsemyfiles:1.1'
+```
+
+
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305189/670232ec-2794-11e7-819f-b92f487b3075.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305190/670328a0-2794-11e7-86ac-62b69af7b577.png" width="300">
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305188/6701de1e-2794-11e7-981f-7d6d0124b2b2.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305187/6701b74a-2794-11e7-8057-c5677db858b0.png" width="300">
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305186/6701b33a-2794-11e7-8c58-d5da64e40768.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305191/67038f8e-2794-11e7-8777-4bb0db870c31.png" width="300">
@@ -109,4 +124,4 @@ Bundle b = intent.getExtras()
 
 
 If you have any questions/queries/Bugs/Hugs please mail @
-#adityak368@gmail.com
+adityak368@gmail.com
