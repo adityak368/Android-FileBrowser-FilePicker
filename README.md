@@ -105,6 +105,20 @@ public class FileSelectedBroadCastReceiver extends BroadcastReceiver {
 
 ```
 
+Register the receiver like the following snippet 
+
+``` xml
+
+        <receiver android:name=".FileSelectedBroadCastReceiver"
+            android:exported="false"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.adityak.filebrowser.FILE_SELECTED_BROADCAST" />
+            </intent-filter>
+        </receiver>
+        
+```
+
 If you also need some other parameters to be sent with the broadcast use the following when creating the activity
 ``` java
 
