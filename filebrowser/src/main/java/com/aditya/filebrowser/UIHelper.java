@@ -24,7 +24,9 @@ public class UIHelper {
         return new Runnable() {
             @Override
             public void run() {
-                    mOnChangeDirectoryListener.updateUI(null,true);
+                if(mOnChangeDirectoryListener!=null) {
+                    mOnChangeDirectoryListener.updateUI(null, true);
+                }
             }
         };
     }
@@ -33,8 +35,10 @@ public class UIHelper {
         return new Runnable() {
             @Override
             public void run() {
-                UIUtils.ShowToast(msg,mContext);
-                mOnChangeDirectoryListener.updateUI(null,true);
+                if(mOnChangeDirectoryListener!=null) {
+                    UIUtils.ShowToast(msg, mContext);
+                    mOnChangeDirectoryListener.updateUI(null, true);
+                }
             }
         };
     }
@@ -43,8 +47,10 @@ public class UIHelper {
         return new Runnable() {
             @Override
             public void run() {
-                progressDialog.setProgress(progress);
-                progressDialog.setMessage(msg);
+                if(progressDialog!=null) {
+                    progressDialog.setProgress(progress);
+                    progressDialog.setMessage(msg);
+                }
             }
         };
     }
@@ -53,7 +59,9 @@ public class UIHelper {
         return new Runnable() {
             @Override
             public void run() {
-                progressDialog.dismiss();
+                if(progressDialog!=null) {
+                    progressDialog.dismiss();
+                }
             }
         };
     }

@@ -39,6 +39,7 @@ import org.apache.commons.io.comparator.NameFileComparator;
 import org.apache.commons.io.comparator.SizeFileComparator;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -62,6 +63,7 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
     private NavigationHelper mNavigationHelper;
 
     private FileIO io;
+    private int mSelectionMode;
 
     //Action Mode for toolbar
     private static ActionMode mActionMode;
@@ -77,6 +79,7 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
         b.putStringArray(Constants.APP_PREMISSION_KEY, Constants.APP_PREMISSIONS);
         in.putExtras(b);
         startActivityForResult(in,APP_PERMISSION_REQUEST);
+        mSelectionMode = getIntent().getIntExtra(Constants.SELECTION_MODE,Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal());
         mNavigationHelper = new NavigationHelper(mContext);
         if (savedInstanceState != null) {
             mNavigationHelper.changeDirectory((File)savedInstanceState.getSerializable("current_node"));
@@ -84,6 +87,7 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
         }
         io = new FileIO(this,this);
         mTabChangeListener = new TabChangeListener(this,mNavigationHelper,mAdapter,null,null,this,this);
+        mTabChangeListener.setSelectionMode(Constants.SELECTION_MODES.values()[mSelectionMode]);
         mNavigationHelper.setmChangeDirectoryListener(this);
     }
 
@@ -158,11 +162,20 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
                             if (f.isDirectory()) {
                                 mNavigationHelper.changeDirectory(f);
                             } else {
-                                Uri fileUri = Uri.fromFile(f);
-                                Intent data = new Intent();
-                                data.setData(fileUri);
-                                setResult(RESULT_OK, data);
-                                finish();
+                                if(mSelectionMode==Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal()) {
+                                    Uri fileUri = Uri.fromFile(f);
+                                    Intent data = new Intent();
+                                    data.setData(fileUri);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                } else {
+                                    ArrayList<Uri> chosenItems = new ArrayList<>();
+                                    chosenItems.add(Uri.fromFile(f));
+                                    Intent data = new Intent();
+                                    data.putParcelableArrayListExtra(Constants.SELECTED_ITEMS, chosenItems);
+                                    setResult(Activity.RESULT_OK, data);
+                                    finish();
+                                }
                             }
                         }
                     }

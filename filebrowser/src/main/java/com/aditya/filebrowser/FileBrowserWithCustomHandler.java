@@ -5,7 +5,6 @@ package com.aditya.filebrowser;
  */
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +25,6 @@ import com.aditya.filebrowser.adapters.CustomAdapterItemClickListener;
 import com.aditya.filebrowser.interfaces.ContextSwitcher;
 import com.aditya.filebrowser.interfaces.FuncPtr;
 import com.aditya.filebrowser.interfaces.OnChangeDirectoryListener;
-import com.aditya.filebrowser.interfaces.OnFileSelectedListener;
 import com.aditya.filebrowser.listeners.TabChangeListener;
 import com.aditya.filebrowser.utils.AssortedUtils;
 import com.aditya.filebrowser.utils.Permissions;
@@ -36,7 +33,6 @@ import com.aditya.filebrowser.utils.UIUtils;
 import com.roughike.bottombar.BottomBar;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -58,11 +54,11 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
     private NavigationHelper mNavigationHelper;
     private Operations op;
     private FileIO io;
-    private OnFileSelectedListener mFileSelectedListener;
     //Action Mode for toolbar
     private static ActionMode mActionMode;
     private static final int APP_PERMISSION_REQUEST = 0;
 
+    private Bundle extras;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +78,7 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
         op = Operations.getInstance(mContext);
         mTabChangeListener = new TabChangeListener(this,mNavigationHelper,mAdapter,io,op,this,this);
         mNavigationHelper.setmChangeDirectoryListener(this);
-        mFileSelectedListener = (OnFileSelectedListener)getIntent().getExtras().get(Constants.FILE_SELECTED_HANDLER);
+        extras = getIntent().getExtras();
     }
 
     @Override
@@ -199,7 +195,10 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
                                 mNavigationHelper.changeDirectory(f);
                             } else {
                                 Uri selectedFileUri = Uri.fromFile(f);
-                                mFileSelectedListener.onSelectedFile(selectedFileUri);
+                                Intent i = new Intent(Constants.FILE_SELECTED_BROADCAST);
+                                i.putExtra(Constants.BROADCAST_SELECTED_FILE, selectedFileUri);
+                                i.putExtras(extras);
+                                sendBroadcast(i);
                             }
                         }
                     }

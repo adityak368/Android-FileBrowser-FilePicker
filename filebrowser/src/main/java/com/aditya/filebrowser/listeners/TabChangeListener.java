@@ -37,6 +37,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
     private Operations op;
     private ContextSwitcher mContextSwitcher;
     private OnChangeDirectoryListener mOnChangeDirectoryListener;
+    private Constants.SELECTION_MODES selectionMode;
 
     public TabChangeListener(Activity mActivity, NavigationHelper mNavigationHelper, CustomAdapter mAdapter, FileIO io, Operations op, ContextSwitcher mContextSwtcher,OnChangeDirectoryListener mOnChangeDirectoryListener) {
         this.mNavigationHelper = mNavigationHelper;
@@ -46,6 +47,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
         this.op = op;
         this.mContextSwitcher = mContextSwtcher;
         this.mOnChangeDirectoryListener = mOnChangeDirectoryListener;
+        this.selectionMode = Constants.SELECTION_MODES.SINGLE_SELECTION;
     }
 
     @Override
@@ -117,10 +119,21 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                         chosenItems.add(Uri.fromFile(selItems.get(i).getFile()));
                     }
                     mContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
-                    Intent data = new Intent();
-                    data.putParcelableArrayListExtra(Constants.SELECTED_ITEMS, chosenItems);
-                    mActivity.setResult(Activity.RESULT_OK, data);
-                    mActivity.finish();
+                    if(getSelectionMode()== Constants.SELECTION_MODES.SINGLE_SELECTION) {
+                        if(chosenItems.size()==1) {
+                            Intent data = new Intent();
+                            data.setData(chosenItems.get(0));
+                            mActivity.setResult(Activity.RESULT_OK, data);
+                            mActivity.finish();
+                        } else {
+                            UIUtils.ShowToast("Please select only 1 item",mActivity);
+                        }
+                    } else {
+                        Intent data = new Intent();
+                        data.putParcelableArrayListExtra(Constants.SELECTED_ITEMS, chosenItems);
+                        mActivity.setResult(Activity.RESULT_OK, data);
+                        mActivity.finish();
+                    }
                 }
             }
     }
@@ -131,5 +144,13 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
 
     public void setmAdapter(CustomAdapter mAdapter) {
         this.mAdapter = mAdapter;
+    }
+
+    public Constants.SELECTION_MODES getSelectionMode() {
+        return selectionMode;
+    }
+
+    public void setSelectionMode(Constants.SELECTION_MODES selectionMode) {
+        this.selectionMode = selectionMode;
     }
 }

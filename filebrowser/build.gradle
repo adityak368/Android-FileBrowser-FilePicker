@@ -1,5 +1,11 @@
 apply plugin: 'com.android.library'
 
+ext {
+    PUBLISH_GROUP_ID = 'com.adityak'
+    PUBLISH_ARTIFACT_ID = 'browsemyfiles'
+    PUBLISH_VERSION = '1.1'
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -29,3 +35,5 @@ dependencies {
     compile 'com.roughike:bottom-bar:2.3.1'
     compile files('libs/commons-io-2.5.jar')
 }
+
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

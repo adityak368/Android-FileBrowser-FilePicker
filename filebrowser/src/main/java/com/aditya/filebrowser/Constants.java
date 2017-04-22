@@ -35,13 +35,22 @@ public class Constants {
         MULTI_CHOICE
     }
 
+    public enum SELECTION_MODES {
+        SINGLE_SELECTION,
+        MULTIPLE_SELECTION
+    }
+
     public static final String APP_PREMISSION_KEY = "APP_PERMISSIONS";
-    public static final String FILE_SELECTED_HANDLER = "FILE_SELECTED_HANDLER";
+    public static final String FILE_SELECTED_BROADCAST = "com.adityak.filebrowser.FILE_SELECTED_BROADCAST";
+    public static final String BROADCAST_EXTRAS = "EXTRAS";
+    public static final String BROADCAST_SELECTED_FILE = "BROADCAST_SELECTED_FILE";
+    public static final String SELECTION_MODE = "SELECTION_MODE";
     public static final String SELECTED_ITEMS = "SELECTED_ITEMS";
     public static final String [] APP_PREMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final String INTERNALSTORAGE = "Internal Storage";
     public static final String EXTERNALSTORAGE = "External Storage";
+
     public static File internalStorageRoot = Environment.getExternalStorageDirectory();
     public static File externalStorageRoot;
     static {
