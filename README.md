@@ -7,7 +7,7 @@ A FileBrowser / FileChooser for Android that you can integrate to your app to br
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305186/6701b33a-2794-11e7-8c58-d5da64e40768.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305191/67038f8e-2794-11e7-8777-4bb0db870c31.png" width="300">
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305192/6730cec2-2794-11e7-8ab0-9b696822520f.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305193/6733e6fc-2794-11e7-852d-66fe162655d2.png" width="300">
 
-It easily integrates with your app's color scheme. You can change the color scheme using
+It easily integrates with your app's color scheme. You can change the color scheme using the following in your styles.xml
 
 ``` xml
 <item name="colorPrimary">@color/colorPrimary</item>
@@ -19,7 +19,7 @@ It easily integrates with your app's color scheme. You can change the color sche
 
 There are 3 main classes to use the library.
 
-1. FileBrowser - USed to just Browse files in storage (has all file IO features)
+1. FileBrowser - Used to just Browse files in storage (has all file IO features)
 2. FileChooser - Used to select single/multiple files in storage (has some IO features)
 3. FileBrowserWithCustomHandler - Used to run custom code when files are selected (has all IO features)
 
