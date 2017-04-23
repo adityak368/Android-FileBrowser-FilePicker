@@ -7,13 +7,13 @@ A FileBrowser / FileChooser for Android that you can integrate to your app to br
 <dependency>
   <groupId>com.adityak</groupId>
   <artifactId>browsemyfiles</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
   <type>pom</type>
 </dependency>
 ```
 # In build.gradle
 ```
-compile 'com.adityak:browsemyfiles:1.1'
+compile 'com.adityak:browsemyfiles:1.2'
 ```
 
 
@@ -29,7 +29,6 @@ It easily integrates with your app's color scheme. You can change the color sche
 <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 <item name="colorAccent">@color/colorAccent</item>
 <item name="android:actionModeBackground">@color/actionModeToolbar</item>
-<item name="windowActionModeOverlay">true</item>
 ```
 
 There are 3 main classes to use the library.
