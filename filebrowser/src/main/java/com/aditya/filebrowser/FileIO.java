@@ -2,7 +2,6 @@ package com.aditya.filebrowser;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +9,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 
-import com.aditya.filebrowser.adapters.CustomAdapter;
-import com.aditya.filebrowser.interfaces.ContextSwitcher;
 import com.aditya.filebrowser.interfaces.FuncPtr;
 import com.aditya.filebrowser.interfaces.OnChangeDirectoryListener;
 import com.aditya.filebrowser.models.FileItem;

@@ -1,7 +1,6 @@
 package com.aditya.filebrowser.adapters;
 
 import android.content.Context;
-import android.support.transition.Visibility;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;

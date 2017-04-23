@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,24 +21,15 @@ import com.aditya.filebrowser.adapters.CustomAdapterItemClickListener;
 import com.aditya.filebrowser.interfaces.ContextSwitcher;
 import com.aditya.filebrowser.interfaces.OnChangeDirectoryListener;
 import com.aditya.filebrowser.listeners.TabChangeListener;
-import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.AssortedUtils;
 import com.aditya.filebrowser.utils.Permissions;
 import com.aditya.filebrowser.utils.ToolbarActionMode;
-import com.aditya.filebrowser.utils.UIUtils;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabReselectListener;
-import com.roughike.bottombar.OnTabSelectListener;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.comparator.LastModifiedFileComparator;
-import org.apache.commons.io.comparator.NameFileComparator;
-import org.apache.commons.io.comparator.SizeFileComparator;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * Created by Aditya on 4/17/2017.
@@ -65,7 +53,7 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
     private FileIO io;
     private int mSelectionMode;
 
-    //Action Mode for toolbar
+    //Action Mode for filebrowser_toolbar
     private static ActionMode mActionMode;
     private static final int APP_PERMISSION_REQUEST = 0;
 
@@ -141,8 +129,8 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
     }
 
     private void loadUi() {
-        setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setContentView(R.layout.filebrowser_activity_main);
+        toolbar = (Toolbar) findViewById(R.id.filebrowser_tool_bar);
         setSupportActionBar(toolbar);
 
         mCurrentPath = (TextView) findViewById(R.id.currentPath);

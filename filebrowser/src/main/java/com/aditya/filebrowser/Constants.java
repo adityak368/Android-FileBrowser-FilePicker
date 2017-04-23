@@ -2,10 +2,8 @@ package com.aditya.filebrowser;
 
 import android.Manifest;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**

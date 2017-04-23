@@ -1,6 +1,5 @@
 package com.aditya.filebrowser;
 
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;

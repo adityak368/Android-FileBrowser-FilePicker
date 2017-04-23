@@ -10,15 +10,15 @@
     tools:context=".FileBrowser">
 
     <include
-        android:id="@+id/tool_bar"
-        layout="@layout/toolbar"/>
+        android:id="@+id/filebrowser_tool_bar"
+        layout="@layout/filebrowser_toolbar"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/address"
         android:orientation="vertical"
-        android:layout_below="@+id/tool_bar">
+        android:layout_below="@+id/filebrowser_tool_bar">
 
 
         <com.beardedhen.androidbootstrap.BootstrapWell

@@ -54,7 +54,7 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
     private NavigationHelper mNavigationHelper;
     private Operations op;
     private FileIO io;
-    //Action Mode for toolbar
+    //Action Mode for filebrowser_toolbar
     private static ActionMode mActionMode;
     private static final int APP_PERMISSION_REQUEST = 0;
 
@@ -173,8 +173,8 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
     }
 
     private void loadUi() {
-        setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setContentView(R.layout.filebrowser_activity_main);
+        toolbar = (Toolbar) findViewById(R.id.filebrowser_tool_bar);
         setSupportActionBar(toolbar);
 
         mCurrentPath = (TextView) findViewById(R.id.currentPath);

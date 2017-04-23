@@ -1,12 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="FileBrowserTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!--  It should be true otherwise action mode will not overlay toolbar -->
+        <!--  It should be true otherwise action mode will not overlay filebrowser_toolbar -->
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/actionModeToolbar</item>
     </style>

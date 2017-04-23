@@ -1,9 +1,6 @@
 package com.aditya.filebrowser;
 
-import com.aditya.filebrowser.models.FileItem;
-
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by Aditya on 4/17/2017.

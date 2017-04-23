@@ -1,11 +1,9 @@
 package com.aditya.filebrowser.listeners;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.IdRes;
-import android.support.design.widget.TabLayout;
 import android.widget.RadioGroup;
 
 import com.aditya.filebrowser.Constants;
@@ -21,7 +19,6 @@ import com.aditya.filebrowser.utils.UIUtils;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

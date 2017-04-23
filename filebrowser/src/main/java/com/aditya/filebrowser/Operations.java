@@ -1,12 +1,10 @@
 package com.aditya.filebrowser;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.UIUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
