@@ -2,6 +2,8 @@
 
 A FileBrowser / FileChooser for Android that you can integrate to your app to browse/select files from internal/external storage.
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--FileBrowser--FilePicker-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5636)
+
 # Using Maven
 ``` xml
 <dependency>
