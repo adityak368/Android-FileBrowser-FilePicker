@@ -2,6 +2,8 @@
 
 A FileBrowser / FileChooser for Android that you can integrate to your app to browse/select files from internal/external storage.
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--FileBrowser--FilePicker-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5636)
+
 # Using Maven
 ``` xml
 <dependency>
@@ -53,7 +55,7 @@ Use following Intent to start the FileChooser
 ``` java
 Intent i2 = new Intent(getApplicationContext(), FileChooser.class);
 i2.putExtra(Constants.SELECTION_MODE,Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal());
-startActivityForResult(i2,PICK_CONTACT_REQUEST);
+startActivityForResult(i2,PICK_FILE_REQUEST);
 ```
 
 
@@ -61,7 +63,7 @@ To get the selected file, In your calling activity's onActivityResult method, us
 
 ```java
 
-if (requestCode == PICK_CONTACT_REQUEST && data!=null) {
+if (requestCode == PICK_FILE_REQUEST && data!=null) {
       if (resultCode == RESULT_OK) {
           Uri file = data.getData();
       }
@@ -74,14 +76,14 @@ if (requestCode == PICK_CONTACT_REQUEST && data!=null) {
 ``` java
 Intent i2 = new Intent(getApplicationContext(), FileChooser.class);
 i2.putExtra(Constants.SELECTION_MODE,Constants.SELECTION_MODES.MULTIPLE_SELECTION.ordinal());
-startActivityForResult(i2,PICK_CONTACT_REQUEST);
+startActivityForResult(i2,PICK_FILE_REQUEST);
 ```
 
 To get the selected file, In your calling activity's onActivityResult method, use the following
 
 ```java
 
-if (requestCode == PICK_CONTACT_REQUEST && data!=null) {
+if (requestCode == PICK_FILE_REQUEST && data!=null) {
       if (resultCode == RESULT_OK) {
           ArrayList<Uri> selectedFiles  = data.getParcelableArrayListExtra(Constants.SELECTED_ITEMS);
       }
