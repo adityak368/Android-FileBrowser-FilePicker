@@ -55,16 +55,20 @@ public class Constants {
 
         try {
             List<GetRemovableDevice.StorageInfo> infos = GetRemovableDevice.getStorageList();
+            boolean isExternalDirectoryInitialized = false;
             for(int i=0;i<infos.size();i++) {
                 if(infos.get(i).getDisplayName().contains(Constants.EXTERNALSTORAGE)) {
                     File detectedDirectory =  new File(infos.get(i).path).getCanonicalFile();
-                    if(detectedDirectory.getTotalSpace()>0)
+                    if(detectedDirectory!=null && detectedDirectory.exists() && detectedDirectory.isDirectory() && detectedDirectory.getTotalSpace()>0)
                         externalStorageRoot = detectedDirectory;
                     else
                         externalStorageRoot = new File("/");
+                    isExternalDirectoryInitialized = true;
                     break;
                 }
             }
+            if(!isExternalDirectoryInitialized)
+                externalStorageRoot = new File("/");
         } catch (Exception e) {
             e.printStackTrace();
             externalStorageRoot = new File("/");

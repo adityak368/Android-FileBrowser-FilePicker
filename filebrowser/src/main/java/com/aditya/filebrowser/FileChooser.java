@@ -1,6 +1,7 @@
 package com.aditya.filebrowser;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Created by Aditya on 4/17/2017.
  */
-public class FileChooser extends AppCompatActivity implements OnChangeDirectoryListener,ContextSwitcher {
+public class FileChooser extends AppCompatActivity implements OnChangeDirectoryListener,ContextSwitcher,SearchView.OnQueryTextListener {
 
     private Context mContext;
     private Toolbar toolbar;
@@ -57,6 +59,8 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
     private static ActionMode mActionMode;
     private static final int APP_PERMISSION_REQUEST = 0;
 
+    private SearchView searchView;
+    private MenuItem searchMenuItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +117,15 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toolbar_default_menu_filechooser, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchMenuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView)searchMenuItem.getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -148,6 +161,7 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
                         if (mAdapter.getChoiceMode()== Constants.CHOICE_MODE.SINGLE_CHOICE) {
                             File f = mAdapter.getItemAt(position).getFile();
                             if (f.isDirectory()) {
+                                closeSearchView();
                                 mNavigationHelper.changeDirectory(f);
                             } else {
                                 if(mSelectionMode==Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal()) {
@@ -199,6 +213,7 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
                 mActionMode.finish();
         } else {
             if(mActionMode==null) {
+                closeSearchView();
                 mActionMode = startSupportActionMode(new ToolbarActionMode(mContext,this,mAdapter,Constants.APP_MODE.FILE_CHOOSER,io));
                 mActionMode.setTitle("Select Multiple Files");
             }
@@ -248,5 +263,24 @@ public class FileChooser extends AppCompatActivity implements OnChangeDirectoryL
         if(Constants.externalStorageRoot!=null)
             mPathChange.getTabWithId(R.id.menu_external_storage).setTitle(FileUtils.byteCountToDisplaySize(Constants.externalStorageRoot.getUsableSpace()) + "/" +  FileUtils.byteCountToDisplaySize(Constants.externalStorageRoot.getTotalSpace()));
 
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mAdapter.getFilter().filter(newText);
+        return false;
+    }
+
+    private void closeSearchView() {
+        if (searchView.isShown()) {
+            searchView.setQuery("", false);
+            searchMenuItem.collapseActionView();
+            searchView.setIconified(true);
+        }
     }
 }

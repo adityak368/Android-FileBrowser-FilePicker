@@ -59,7 +59,7 @@ public class NavigationHelper {
     }
 
     public void changeDirectory(File newDirectory) {
-        if(newDirectory!=null && newDirectory.exists()) {
+        if(newDirectory!=null && newDirectory.exists() &&  newDirectory.isDirectory()) {
             mFileNavigator.setmCurrentNode(newDirectory);
         }
         updateObservers(true);

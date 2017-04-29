@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,23 +27,63 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> implements Filterable {
 
     public void selectAll() {
         for(int i=0;i<fileList.size();i++) {
-            fileList.get(i).setSelected(true);
+            filteredfileList.get(i).setSelected(true);
         }
         notifyDataSetChanged();
     }
 
     public void selectItem(int position) {
-        fileList.get(position).setSelected(true);
+        filteredfileList.get(position).setSelected(true);
         notifyDataSetChanged();
     }
 
     private List<FileItem> fileList;
+    private List<FileItem> filteredfileList;
+
     private Constants.CHOICE_MODE currMode;
     private Context mContext;
+    private FileFilter mFileFilter;
+    @Override
+    public Filter getFilter() {
+        if (mFileFilter == null) {
+            mFileFilter = new FileFilter();
+        }
+        return mFileFilter;
+    }
+
+    private class FileFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults filterResults = new FilterResults();
+
+            if (constraint!=null && constraint.length()>0) {
+                ArrayList<FileItem> tempList = new ArrayList<FileItem>();
+                // search content in friend list
+                for (FileItem fileItem : fileList) {
+                    if (fileItem.getFile().getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        tempList.add(fileItem);
+                    }
+                }
+                filterResults.count = tempList.size();
+                filterResults.values = tempList;
+            } else {
+                filterResults.count = fileList.size();
+                filterResults.values = fileList;
+            }
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            filteredfileList = (ArrayList<FileItem>) filterResults.values;
+            notifyDataSetChanged();
+        }
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView fileName;
@@ -61,6 +103,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     public CustomAdapter(List<FileItem> fileList,Context mContext) {
         this.fileList = fileList;
+        this.filteredfileList = fileList;
         this.currMode = Constants.CHOICE_MODE.SINGLE_CHOICE;
         this.mContext = mContext;
     }
@@ -68,7 +111,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public void setChoiceMode(Constants.CHOICE_MODE mode) {
         this.currMode = mode;
         if(mode== Constants.CHOICE_MODE.SINGLE_CHOICE)
-            for(FileItem item : fileList) {
+            for(FileItem item : filteredfileList) {
                 item.setSelected(false);
             }
     }
@@ -87,7 +130,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        File f = fileList.get(position).getFile();
+        File f = filteredfileList.get(position).getFile();
         holder.fileIcon.setImageResource(FileResolution.getFileIcon(f));
         int length = 0;
         String children = "";
@@ -117,10 +160,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             holder.selectcb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    fileList.get(position).setSelected(isChecked);
+                    filteredfileList.get(position).setSelected(isChecked);
                 }
             });
-            holder.selectcb.setChecked(fileList.get(position).isSelected());
+            holder.selectcb.setChecked(filteredfileList.get(position).isSelected());
         } else {
             holder.selectcb.setVisibility(View.GONE);
         }
@@ -128,13 +171,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-        return fileList.size();
+        return filteredfileList.size();
     }
 
     public List<FileItem> getSelectedItems() {
         List<FileItem> selectedItems = new ArrayList<FileItem>();
         if(getChoiceMode()== Constants.CHOICE_MODE.MULTI_CHOICE) {
-            for(FileItem item : fileList) {
+            for(FileItem item : filteredfileList) {
                 if(item.isSelected())
                     selectedItems.add(item);
             }
@@ -143,6 +186,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     }
 
     public FileItem getItemAt(int position) {
-        return fileList.get(position);
+        return filteredfileList.get(position);
     }
 }

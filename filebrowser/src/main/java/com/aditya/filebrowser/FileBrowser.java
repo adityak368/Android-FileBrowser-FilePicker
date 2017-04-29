@@ -5,6 +5,7 @@ package com.aditya.filebrowser;
  */
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +42,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 
 
-public class FileBrowser extends AppCompatActivity implements OnChangeDirectoryListener,ContextSwitcher {
+public class FileBrowser extends AppCompatActivity implements OnChangeDirectoryListener,ContextSwitcher,SearchView.OnQueryTextListener {
 
     private Context mContext;
     private Toolbar toolbar;
@@ -61,6 +63,9 @@ public class FileBrowser extends AppCompatActivity implements OnChangeDirectoryL
     //Action Mode for filebrowser_toolbar
     private static ActionMode mActionMode;
     private static final int APP_PERMISSION_REQUEST = 0;
+
+    private SearchView searchView;
+    private MenuItem searchMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +122,14 @@ public class FileBrowser extends AppCompatActivity implements OnChangeDirectoryL
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toolbar_default_menu, menu);
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchMenuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView)searchMenuItem.getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -195,6 +208,7 @@ public class FileBrowser extends AppCompatActivity implements OnChangeDirectoryL
                         if (mAdapter.getChoiceMode()== Constants.CHOICE_MODE.SINGLE_CHOICE) {
                             File f = mAdapter.getItemAt(position).getFile();
                             if (f.isDirectory()) {
+                                closeSearchView();
                                 mNavigationHelper.changeDirectory(f);
                             } else {
                                 MimeTypeMap mimeMap = MimeTypeMap.getSingleton();
@@ -241,6 +255,7 @@ public class FileBrowser extends AppCompatActivity implements OnChangeDirectoryL
                 mActionMode.finish();
         } else {
             if(mActionMode==null) {
+                closeSearchView();
                 mActionMode = startSupportActionMode(new ToolbarActionMode(mContext,this,mAdapter,Constants.APP_MODE.FILE_BROWSER,io));
                 mActionMode.setTitle("Select Multiple Files");
             }
@@ -280,5 +295,24 @@ public class FileBrowser extends AppCompatActivity implements OnChangeDirectoryL
 
     public void setIo(FileIO io) {
         this.io = io;
+    }
+
+    private void closeSearchView() {
+        if (searchView.isShown()) {
+            searchView.setQuery("", false);
+            searchMenuItem.collapseActionView();
+            searchView.setIconified(true);
+        }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mAdapter.getFilter().filter(newText);
+        return false;
     }
 }

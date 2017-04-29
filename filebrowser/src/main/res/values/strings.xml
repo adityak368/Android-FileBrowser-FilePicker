@@ -22,6 +22,8 @@
     <string name="showfoldersize">Show Folder Size</string>
     <string name="showhiddenfolder">Show Hidden Folders</string>
     <string name="chooseitems">Choose Items</string>
+    <string name="search">Search</string>
+    <string name="searchfiles">Search Files</string>
 
     <string-array name="filter_options">
         <item>Files</item>
