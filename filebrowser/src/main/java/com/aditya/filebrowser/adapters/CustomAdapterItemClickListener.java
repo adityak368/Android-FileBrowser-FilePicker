@@ -13,6 +13,7 @@ import android.view.View;
 public class CustomAdapterItemClickListener implements RecyclerView.OnItemTouchListener {
 
     private OnItemClickListener mListener;
+    private boolean mFastScrolling = false;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -32,7 +33,7 @@ public class CustomAdapterItemClickListener implements RecyclerView.OnItemTouchL
             public void onLongPress(MotionEvent e){
                 View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
 
-                if(childView != null && mListener != null){
+                if(childView != null && mListener != null && !ismFastScrolling()){
                     mListener.onItemLongClick(childView, recyclerView.getChildAdapterPosition(childView));
                 }
             }
@@ -41,7 +42,7 @@ public class CustomAdapterItemClickListener implements RecyclerView.OnItemTouchL
     @Override
     public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
-        if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
+        if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e) && !ismFastScrolling()) {
             mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
         }
         return false;
@@ -54,5 +55,13 @@ public class CustomAdapterItemClickListener implements RecyclerView.OnItemTouchL
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
+    }
+
+    public boolean ismFastScrolling() {
+        return mFastScrolling;
+    }
+
+    public void setmFastScrolling(boolean mFastScrollFlag) {
+        this.mFastScrolling = mFastScrollFlag;
     }
 }

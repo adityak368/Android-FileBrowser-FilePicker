@@ -5,7 +5,7 @@ import com.aditya.filebrowser.Constants;
 /**
  * Created by Aditya on 4/18/2017.
  */
-public interface ContextSwitcher {
+public interface IContextSwitcher {
     public void changeBottomNavMenu(Constants.CHOICE_MODE multiChoice);
     public void setNullToActionMode();
     public void reDrawFileList();

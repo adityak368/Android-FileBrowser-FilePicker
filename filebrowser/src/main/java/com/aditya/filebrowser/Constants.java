@@ -3,6 +3,8 @@ package com.aditya.filebrowser;
 import android.Manifest;
 import android.os.Environment;
 
+import com.aditya.filebrowser.fileoperations.GetRemovableDevice;
+
 import java.io.File;
 import java.util.List;
 
@@ -48,7 +50,6 @@ public class Constants {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final String INTERNALSTORAGE = "Internal Storage";
     public static final String EXTERNALSTORAGE = "External Storage";
-
     public static File internalStorageRoot = Environment.getExternalStorageDirectory();
     public static File externalStorageRoot;
     static {
@@ -74,7 +75,7 @@ public class Constants {
             externalStorageRoot = new File("/");
         }
     }
-    //GetRemovableDevice.getDirectories().length>0?new File(GetRemovableDevice.getDirectories()[0]):Environment.getExternalStorageDirectory();
+
     public static final String SHOW_FOLDER_SIZE = "false";
     public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 }

@@ -1,16 +1,21 @@
-package com.aditya.filebrowser.utils;
+package com.aditya.filebrowser;
 
+import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.aditya.filebrowser.Constants;
-import com.aditya.filebrowser.FileIO;
+import com.aditya.filebrowser.fileoperations.FileIO;
 import com.aditya.filebrowser.R;
 import com.aditya.filebrowser.adapters.CustomAdapter;
-import com.aditya.filebrowser.interfaces.ContextSwitcher;
+import com.aditya.filebrowser.interfaces.IContextSwitcher;
+import com.aditya.filebrowser.listeners.SearchViewListener;
 import com.aditya.filebrowser.models.FileItem;
+import com.aditya.filebrowser.utils.UIUtils;
 
 import java.util.List;
 
@@ -20,16 +25,19 @@ import java.util.List;
 public class ToolbarActionMode implements ActionMode.Callback{
 
     CustomAdapter mAdapter;
-    ContextSwitcher mContextSwitcher;
+    IContextSwitcher mIContextSwitcher;
     Constants.APP_MODE appMode;
-    Context mContext;
+    Activity mActivity;
     FileIO io;
 
-    public ToolbarActionMode(Context mContext, ContextSwitcher mContextSwitcher, CustomAdapter mAdapter, Constants.APP_MODE mode, FileIO io) {
+    private SearchView mSearchView;
+    private MenuItem mSearchMenuItem;
+
+    public ToolbarActionMode(Activity mActivity, IContextSwitcher mIContextSwitcher, CustomAdapter mAdapter, Constants.APP_MODE mode, FileIO io) {
         this.mAdapter = mAdapter;
-        this.mContextSwitcher = mContextSwitcher;
+        this.mIContextSwitcher = mIContextSwitcher;
         this.appMode = mode;
-        this.mContext = mContext;
+        this.mActivity = mActivity;
         this.io = io;
     }
 
@@ -39,23 +47,24 @@ public class ToolbarActionMode implements ActionMode.Callback{
             mode.getMenuInflater().inflate(R.menu.toolbar_multiselect_menu, menu);//Inflate the menu over action mode
         else if(this.appMode== Constants.APP_MODE.FILE_CHOOSER)
             mode.getMenuInflater().inflate(R.menu.toolbar_multiselect_menu_filechooser, menu);//Inflate the menu over action mode
+
         return true;
     }
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         mAdapter.setChoiceMode(Constants.CHOICE_MODE.MULTI_CHOICE);
-        mContextSwitcher.changeBottomNavMenu(Constants.CHOICE_MODE.MULTI_CHOICE);
-        mContextSwitcher.reDrawFileList();
+        mIContextSwitcher.changeBottomNavMenu(Constants.CHOICE_MODE.MULTI_CHOICE);
+        mIContextSwitcher.reDrawFileList();
         return false;
     }
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         mAdapter.setChoiceMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
-        mContextSwitcher.changeBottomNavMenu(Constants.CHOICE_MODE.SINGLE_CHOICE);
-        mContextSwitcher.reDrawFileList();
-        mContextSwitcher.setNullToActionMode();
+        mIContextSwitcher.changeBottomNavMenu(Constants.CHOICE_MODE.SINGLE_CHOICE);
+        mIContextSwitcher.reDrawFileList();
+        mIContextSwitcher.setNullToActionMode();
     }
 
     @Override
@@ -73,11 +82,11 @@ public class ToolbarActionMode implements ActionMode.Callback{
         }
         else if(item.getItemId()==R.id.action_rename) {
             if (selectedItems.size() != 1) {
-                UIUtils.ShowToast("Please select a single item", mContext);
+                UIUtils.ShowToast("Please select a single item", mActivity);
                 return false;
             }
             if (!selectedItems.get(0).getFile().canWrite()) {
-                UIUtils.ShowToast("No write permission available", mContext);
+                UIUtils.ShowToast("No write permission available", mActivity);
                 return false;
             }
             io.renameFile(selectedItems.get(0));

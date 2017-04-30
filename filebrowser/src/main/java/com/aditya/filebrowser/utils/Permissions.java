@@ -30,7 +30,7 @@ public class Permissions extends AppCompatActivity {
 
     public void requestPermissions(String []permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Here, thisActivity is the current activity
+
             int ungrantedPermCount = 0;
             ArrayList<String> permissionsToBeAsked = new ArrayList<String>();
             for(int i=0;i< permissions.length;i++) {
@@ -92,21 +92,14 @@ public class Permissions extends AppCompatActivity {
                     } else {
                         setResult(Activity.RESULT_CANCELED);
                     }
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
 
                 } else {
                     setResult(Activity.RESULT_CANCELED);
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
 
                 finish();
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 

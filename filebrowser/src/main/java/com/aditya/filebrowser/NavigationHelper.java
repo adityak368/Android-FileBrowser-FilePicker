@@ -3,7 +3,9 @@ package com.aditya.filebrowser;
 import android.content.Context;
 import android.os.Environment;
 
-import com.aditya.filebrowser.interfaces.OnChangeDirectoryListener;
+import com.aditya.filebrowser.fileoperations.FileNavigator;
+import com.aditya.filebrowser.fileoperations.Operations;
+import com.aditya.filebrowser.listeners.OnFileChangedListener;
 import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.UIUtils;
 
@@ -25,7 +27,7 @@ public class NavigationHelper {
     private FileNavigator mFileNavigator;
     private ArrayList<FileItem> mFiles = new ArrayList<FileItem>();
     private Context mContext;
-    private List<OnChangeDirectoryListener> mChangeDirectoryListeners;
+    private List<OnFileChangedListener> mChangeDirectoryListeners;
 
     NavigationHelper(Context mContext) {
         this.mContext = mContext;
@@ -39,13 +41,13 @@ public class NavigationHelper {
         if(parent==null || parent.compareTo(mFileNavigator.getmCurrentNode())==0 || Constants.externalStorageRoot==null || Constants.externalStorageRoot.compareTo(mFileNavigator.getmCurrentNode())==0 || Constants.internalStorageRoot.compareTo(mFileNavigator.getmCurrentNode())==0)
             return false;
         mFileNavigator.setmCurrentNode(parent);
-        updateObservers(true);
+        triggerFileChanged();
         return true;
     }
 
     public void navigateToInternalStorage() {
         mFileNavigator.setmCurrentNode(Constants.internalStorageRoot);
-        updateObservers(true);
+        triggerFileChanged();
     }
 
     public void navigateToExternalStorage() {
@@ -55,39 +57,37 @@ public class NavigationHelper {
         } else {
             UIUtils.ShowToast("Cannot Locate External Storage",mContext);
         }
-        updateObservers(true);
+        triggerFileChanged();
     }
 
     public void changeDirectory(File newDirectory) {
         if(newDirectory!=null && newDirectory.exists() &&  newDirectory.isDirectory()) {
             mFileNavigator.setmCurrentNode(newDirectory);
         }
-        updateObservers(true);
-    }
-
-    public void setRootDirectory(File rootDirectory) {
-        if(rootDirectory!=null && rootDirectory.exists())
-            mFileNavigator.setmRootNode(rootDirectory);
+        triggerFileChanged();
     }
 
     public ArrayList<FileItem> getFilesItemsInCurrentDirectory() {
+        Operations op = Operations.getInstance(mContext);
+        Constants.SORT_OPTIONS option = op.getmCurrentSortOption();
+        Constants.FILTER_OPTIONS filterOption = op.getmCurrentFilterOption();
         if (mFileNavigator.getmCurrentNode() == null) mFileNavigator.setmCurrentNode(mFileNavigator.getmRootNode());
-        File[] files = mFileNavigator.getFiles();
-        mFiles.clear();
+        File[] files = mFileNavigator.getFilesInCurrentDirectory();
         if (files != null) {
-            for (int i = 0; i < files.length; i++) mFiles.add(new FileItem(files[i]));
-        }
-        return mFiles;
-    }
-
-    public void filter(Constants.FILTER_OPTIONS option) {
-        if (mFileNavigator.getmCurrentNode() == null) mFileNavigator.setmCurrentNode(mFileNavigator.getmRootNode());
-        File[] files = mFileNavigator.getmCurrentNode().listFiles();
-        mFiles.clear();
-        if (files != null) {
+            mFiles.clear();
+            Comparator<File> comparator = NameFileComparator.NAME_INSENSITIVE_COMPARATOR;
+            switch(option) {
+                case SIZE:
+                    comparator = SizeFileComparator.SIZE_COMPARATOR;
+                    break;
+                case LAST_MODIFIED:
+                    comparator = LastModifiedFileComparator.LASTMODIFIED_COMPARATOR;
+                    break;
+            }
+            Arrays.sort(files,comparator);
             for (int i = 0; i < files.length; i++) {
                 boolean addToFilter = true;
-                switch(option) {
+                switch(filterOption) {
                     case FILES:
                         addToFilter = !files[i].isDirectory();
                         break;
@@ -99,45 +99,20 @@ public class NavigationHelper {
                     mFiles.add(new FileItem(files[i]));
             }
         }
-        updateObservers(false);
-    }
-
-    public void sortBy(Constants.SORT_OPTIONS option) {
-        if (mFileNavigator.getmCurrentNode() == null) mFileNavigator.setmCurrentNode(mFileNavigator.getmRootNode());
-        File[] files = mFileNavigator.getmCurrentNode().listFiles();
-        mFiles.clear();
-        Comparator<File> comparator = NameFileComparator.NAME_COMPARATOR;
-        switch(option) {
-            case SIZE:
-                comparator = SizeFileComparator.SIZE_COMPARATOR;
-                break;
-            case LAST_MODIFIED:
-                comparator = LastModifiedFileComparator.LASTMODIFIED_COMPARATOR;
-                break;
-        }
-        if (files != null) {
-            Arrays.sort(files,comparator);
-            for(int i=0;i<files.length;i++)
-                mFiles.add(new FileItem(files[i]));
-        }
-        updateObservers(false);
+        return mFiles;
     }
 
     public File getCurrentDirectory() {
         return mFileNavigator.getmCurrentNode();
     }
 
-    public File getRootDirectory() {
-        return mFileNavigator.getmRootNode();
-    }
-
-    private void updateObservers(boolean shouldRepopulateDirectory) {
+    public void triggerFileChanged() {
         for(int i=0;i< mChangeDirectoryListeners.size();i++) {
-            mChangeDirectoryListeners.get(i).updateUI(getCurrentDirectory(),shouldRepopulateDirectory);
+            mChangeDirectoryListeners.get(i).onFileChanged(getCurrentDirectory());
         }
     }
 
-    public void setmChangeDirectoryListener(OnChangeDirectoryListener mChangeDirectoryListener) {
+    public void setmChangeDirectoryListener(OnFileChangedListener mChangeDirectoryListener) {
         this.mChangeDirectoryListeners.add(mChangeDirectoryListener);
     }
 

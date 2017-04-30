@@ -1,6 +1,7 @@
 package com.aditya.filebrowser.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aditya.filebrowser.Constants;
-import com.aditya.filebrowser.FileResolution;
+import com.aditya.filebrowser.fileoperations.FileResolution;
 import com.aditya.filebrowser.R;
 import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.AssortedUtils;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import org.apache.commons.io.FileUtils;
 
@@ -27,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> implements Filterable {
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> implements Filterable,FastScrollRecyclerView.SectionedAdapter {
 
     public void selectAll() {
         for(int i=0;i<fileList.size();i++) {
@@ -53,6 +55,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             mFileFilter = new FileFilter();
         }
         return mFileFilter;
+    }
+
+    @NonNull
+    @Override
+    public String getSectionName(int position) {
+        return Character.toString(filteredfileList.get(position).getFile().getName().charAt(0)).toUpperCase();
     }
 
     private class FileFilter extends Filter {

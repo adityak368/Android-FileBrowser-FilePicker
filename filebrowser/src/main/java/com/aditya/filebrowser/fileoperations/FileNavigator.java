@@ -1,6 +1,10 @@
-package com.aditya.filebrowser;
+package com.aditya.filebrowser.fileoperations;
+
+import com.aditya.filebrowser.Constants;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Aditya on 4/17/2017.
@@ -19,7 +23,7 @@ public class FileNavigator {
         return mNavigator;
     }
 
-    public File [] getFiles() {
+    public File [] getFilesInCurrentDirectory() {
         return mCurrentNode.listFiles();
     }
 
@@ -31,15 +35,12 @@ public class FileNavigator {
     }
 
     public void setmCurrentNode(File mCurrentNode) {
-        this.mCurrentNode = mCurrentNode;
+        if(mCurrentNode!=null)
+            this.mCurrentNode = mCurrentNode;
     }
 
     public File getmRootNode() {
         return mRootNode;
-    }
-
-    public void setmRootNode(File mRootNode) {
-        this.mRootNode = mRootNode;
     }
 
 }

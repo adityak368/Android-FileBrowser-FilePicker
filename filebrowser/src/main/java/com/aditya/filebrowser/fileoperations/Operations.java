@@ -1,7 +1,8 @@
-package com.aditya.filebrowser;
+package com.aditya.filebrowser.fileoperations;
 
 import android.content.Context;
 
+import com.aditya.filebrowser.Constants;
 import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.UIUtils;
 
@@ -64,4 +65,24 @@ public class Operations {
         }
         return op;
     }
+
+    public Constants.SORT_OPTIONS getmCurrentSortOption() {
+        return mCurrentSortOption;
+    }
+
+    public void setmCurrentSortOption(Constants.SORT_OPTIONS mCurrentSortOption) {
+        this.mCurrentSortOption = mCurrentSortOption;
+    }
+
+    public Constants.FILTER_OPTIONS getmCurrentFilterOption() {
+        return mCurrentFilterOption;
+    }
+
+    public void setmCurrentFilterOption(Constants.FILTER_OPTIONS mCurrentFilterOption) {
+        this.mCurrentFilterOption = mCurrentFilterOption;
+    }
+
+    private Constants.SORT_OPTIONS mCurrentSortOption = Constants.SORT_OPTIONS.NAME;
+
+    private Constants.FILTER_OPTIONS mCurrentFilterOption = Constants.FILTER_OPTIONS.ALL;
 }

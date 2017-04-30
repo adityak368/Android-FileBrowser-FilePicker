@@ -12,7 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.aditya.filebrowser.R;
-import com.aditya.filebrowser.interfaces.FuncPtr;
+import com.aditya.filebrowser.interfaces.IFuncPtr;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 
@@ -98,7 +98,7 @@ public class UIUtils {
 	}
 
 
-	public static void showEditTextDialog(Context mContext, String title, String initialText, final FuncPtr functionToBeRun) {
+	public static void showEditTextDialog(Context mContext, String title, String initialText, final IFuncPtr functionToBeRun) {
 
 		LayoutInflater inflater = (LayoutInflater)mContext.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.dialog_with_text, null);

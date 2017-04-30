@@ -1,48 +1,43 @@
-package com.aditya.filebrowser;
+package com.aditya.filebrowser.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 
-import com.aditya.filebrowser.interfaces.OnChangeDirectoryListener;
-import com.aditya.filebrowser.utils.UIUtils;
+import com.aditya.filebrowser.NavigationHelper;
 
 /**
  * Created by Aditya on 4/16/2017.
  */
-public class UIHelper {
+public class UIUpdateHelper {
 
-    OnChangeDirectoryListener mOnChangeDirectoryListener;
     Context mContext;
+    NavigationHelper mNavigationeHelper;
 
-    UIHelper(Context mContext,OnChangeDirectoryListener mOnChangeDirectoryListener) {
-        this.mOnChangeDirectoryListener = mOnChangeDirectoryListener;
+    public UIUpdateHelper(NavigationHelper mNavigationeHelper, Context mContext) {
         this.mContext = mContext;
+        this.mNavigationeHelper = mNavigationeHelper;
     }
 
-    Runnable updateRunner() {
+    public Runnable updateRunner() {
         return new Runnable() {
             @Override
             public void run() {
-                if(mOnChangeDirectoryListener!=null) {
-                    mOnChangeDirectoryListener.updateUI(null, true);
-                }
+                mNavigationeHelper.triggerFileChanged();
             }
         };
     }
 
-    Runnable errorRunner(final String msg) {
+    public Runnable errorRunner(final String msg) {
         return new Runnable() {
             @Override
             public void run() {
-                if(mOnChangeDirectoryListener!=null) {
                     UIUtils.ShowToast(msg, mContext);
-                    mOnChangeDirectoryListener.updateUI(null, true);
-                }
+                    mNavigationeHelper.triggerFileChanged();
             }
         };
     }
 
-    Runnable progressUpdater(final ProgressDialog progressDialog, final int progress, final String msg) {
+    public Runnable progressUpdater(final ProgressDialog progressDialog, final int progress, final String msg) {
         return new Runnable() {
             @Override
             public void run() {
@@ -54,7 +49,7 @@ public class UIHelper {
         };
     }
 
-    Runnable toggleProgressBarVisibility(final ProgressDialog progressDialog) {
+    public Runnable toggleProgressBarVisibility(final ProgressDialog progressDialog) {
         return new Runnable() {
             @Override
             public void run() {
