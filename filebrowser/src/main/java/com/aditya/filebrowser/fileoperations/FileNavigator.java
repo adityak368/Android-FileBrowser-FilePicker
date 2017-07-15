@@ -35,7 +35,8 @@ public class FileNavigator {
            FilenameFilter fileNameFilter = new FilenameFilter() {
                @Override
                public boolean accept(File dir, String name) {
-                   if(mAllowedFileExtensionFilter.contains(FilenameUtils.getExtension(name)))
+                   String fileExtension = FilenameUtils.getExtension(name);
+                   if(mAllowedFileExtensionFilter.contains(fileExtension) || fileExtension.isEmpty() )
                        return true;
                    else
                        return false;

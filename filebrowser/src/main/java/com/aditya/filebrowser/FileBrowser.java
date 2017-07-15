@@ -107,12 +107,6 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
             mNavigationHelper.setAllowedFileExtensionFilter(allowedFilesFilter);
         }
 
-        //switch to initial directory if given
-        mInitialDirectory = getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
-        File initDir = new File(mInitialDirectory);
-        if(mInitialDirectory!=null && !mInitialDirectory.isEmpty() && initDir.exists())
-            mNavigationHelper.changeDirectory(initDir);
-
         mFileList = mNavigationHelper.getFilesItemsInCurrentDirectory();
     }
 
@@ -272,6 +266,12 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
         mPathChange.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
         onFileChanged(mNavigationHelper.getCurrentDirectory());
+
+        //switch to initial directory if given
+        mInitialDirectory = getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
+        File initDir = new File(mInitialDirectory);
+        if(mInitialDirectory!=null && !mInitialDirectory.isEmpty() && initDir.exists())
+            mNavigationHelper.changeDirectory(initDir);
     }
 
     public void switchMode(Constants.CHOICE_MODE mode) {
