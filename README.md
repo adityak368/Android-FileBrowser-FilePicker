@@ -136,7 +136,22 @@ and in the broadcast receiver use the following to get the extras
 Bundle b = intent.getExtras()
 ```
 
+### To load a particular directory instead of the normal root directory
+Add the following in the intent
+``` java
+Intent i = new Intent(this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
+i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Movies").getAbsolutePath());
+```
 
+
+### To list only the files with a particular extension
+Add the following in the intent
+``` java
+Intent i = new Intent(this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
+i.putExtra(Constants.ALLOWED_FILE_EXTENSIONS, "mkv;mp4;avi");
+```
+
+Use file extensions delimited by semicolon
 
 If you have any questions/queries/Bugs/Hugs please mail @
 adityak368@gmail.com
