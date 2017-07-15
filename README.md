@@ -9,20 +9,20 @@ A FileBrowser / FileChooser for Android that you can integrate to your app to br
 <dependency>
   <groupId>com.adityak</groupId>
   <artifactId>browsemyfiles</artifactId>
-  <version>1.3</version>
+  <version>1.5</version>
   <type>pom</type>
 </dependency>
 ```
 # In build.gradle
 ```
-compile 'com.adityak:browsemyfiles:1.3'
+compile 'com.adityak:browsemyfiles:1.5'
 ```
 
 
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305189/670232ec-2794-11e7-819f-b92f487b3075.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305190/670328a0-2794-11e7-86ac-62b69af7b577.png" width="300">
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305188/6701de1e-2794-11e7-981f-7d6d0124b2b2.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305187/6701b74a-2794-11e7-8057-c5677db858b0.png" width="300">
 <img src="https://cloud.githubusercontent.com/assets/19688735/25305186/6701b33a-2794-11e7-8c58-d5da64e40768.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305191/67038f8e-2794-11e7-8777-4bb0db870c31.png" width="300">
-<img src="https://cloud.githubusercontent.com/assets/19688735/25305192/6730cec2-2794-11e7-8ab0-9b696822520f.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25305193/6733e6fc-2794-11e7-852d-66fe162655d2.png" width="300">
+<img src="https://cloud.githubusercontent.com/assets/19688735/25305192/6730cec2-2794-11e7-8ab0-9b696822520f.png" width="300">   <img src="https://cloud.githubusercontent.com/assets/19688735/25563142/0f8568ca-2db3-11e7-8782-f22bcce53fd1.png" width="300">
 
 It easily integrates with your app's color scheme. You can change the color scheme using the following in your styles.xml
 
@@ -136,7 +136,22 @@ and in the broadcast receiver use the following to get the extras
 Bundle b = intent.getExtras()
 ```
 
+### To load a particular directory instead of the normal root directory
+Add the following in the intent
+``` java
+Intent i = new Intent(this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
+i.putExtra(Constants.INITIAL_DIRECTORY, new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Movies").getAbsolutePath());
+```
 
+
+### To list only the files with a particular extension
+Add the following in the intent
+``` java
+Intent i = new Intent(this, FileBrowser.class); //works for all 3 main classes (i.e FileBrowser, FileChooser, FileBrowserWithCustomHandler)
+i.putExtra(Constants.ALLOWED_FILE_EXTENSIONS, "mkv;mp4;avi");
+```
+
+Use file extensions delimited by semicolon
 
 If you have any questions/queries/Bugs/Hugs please mail @
 adityak368@gmail.com
