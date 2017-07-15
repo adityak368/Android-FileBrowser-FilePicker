@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.adityak'
     PUBLISH_ARTIFACT_ID = 'browsemyfiles'
-    PUBLISH_VERSION = '1.4'
+    PUBLISH_VERSION = '1.5'
 }
 
 android {
@@ -14,8 +14,8 @@ android {
         //applicationId "com.aditya.filebrowser"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 5
-        versionName "1.4"
+        versionCode 6
+        versionName "1.5"
     }
     buildTypes {
         release {
