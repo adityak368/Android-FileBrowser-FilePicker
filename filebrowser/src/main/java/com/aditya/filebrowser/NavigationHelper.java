@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Aditya on 4/18/2017.
@@ -33,6 +34,10 @@ public class NavigationHelper {
         this.mContext = mContext;
         this.mFileNavigator = FileNavigator.getInstance();
         this.mChangeDirectoryListeners = new ArrayList<>();
+    }
+
+    public void setAllowedFileExtensionFilter(Set<String> allowedFileExtensions) {
+        mFileNavigator.setAllowedFileExtensionFilter(allowedFileExtensions);
     }
 
     public boolean navigateBack() {

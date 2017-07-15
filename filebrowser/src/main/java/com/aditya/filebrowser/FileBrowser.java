@@ -16,7 +16,6 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -47,7 +46,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class FileBrowser extends AppCompatActivity implements OnFileChangedListener,IContextSwitcher {
@@ -77,6 +79,10 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
     private SearchViewListener mSearchViewListener;
     private Handler mUIUpdateHandler;
     private List<FileItem> mFileList;
+
+    private String mInitialDirectory;
+    private String mFilterFilesWithExtension;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +98,21 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         mUIUpdateHandler = new Handler(Looper.getMainLooper());
         io = new FileIO(mNavigationHelper,mUIUpdateHandler,mContext);
         op = Operations.getInstance(mContext);
+
+        //set file filter (i.e display files with the given extension)
+        mFilterFilesWithExtension = getIntent().getStringExtra(Constants.ALLOWED_FILE_EXTENSIONS);
+        if(mFilterFilesWithExtension!=null && !mFilterFilesWithExtension.isEmpty()) {
+            String allowedFileExtension[] = mFilterFilesWithExtension.split(";");
+            Set<String> allowedFilesFilter = new HashSet<String>(Arrays.asList(allowedFileExtension));
+            mNavigationHelper.setAllowedFileExtensionFilter(allowedFilesFilter);
+        }
+
+        //switch to initial directory if given
+        mInitialDirectory = getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
+        File initDir = new File(mInitialDirectory);
+        if(mInitialDirectory!=null && !mInitialDirectory.isEmpty() && initDir.exists())
+            mNavigationHelper.changeDirectory(initDir);
+
         mFileList = mNavigationHelper.getFilesItemsInCurrentDirectory();
     }
 

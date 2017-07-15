@@ -42,7 +42,8 @@ public class Constants {
 
     public static final String APP_PREMISSION_KEY = "APP_PERMISSIONS";
     public static final String FILE_SELECTED_BROADCAST = "com.adityak.filebrowser.FILE_SELECTED_BROADCAST";
-    public static final String BROADCAST_EXTRAS = "EXTRAS";
+    public static final String INITIAL_DIRECTORY = "INITIAL_DIRECTORY";
+    public static final String ALLOWED_FILE_EXTENSIONS = "ALLOWED_FILE_EXTENSIONS";
     public static final String BROADCAST_SELECTED_FILE = "BROADCAST_SELECTED_FILE";
     public static final String SELECTION_MODE = "SELECTION_MODE";
     public static final String SELECTED_ITEMS = "SELECTED_ITEMS";
