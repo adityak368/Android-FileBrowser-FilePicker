@@ -13,7 +13,7 @@ A FileBrowser / FileChooser for Android that you can integrate to your app to br
   <type>pom</type>
 </dependency>
 ```
-# In build.gradle
+# Or Using Gradle
 ```
 compile 'com.adityak:browsemyfiles:1.5'
 ```
