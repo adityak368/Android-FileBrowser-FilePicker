@@ -240,9 +240,11 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
 
         //switch to initial directory if given
         mInitialDirectory = getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
-        File initDir = new File(mInitialDirectory);
-        if(mInitialDirectory!=null && !mInitialDirectory.isEmpty() && initDir.exists())
-            mNavigationHelper.changeDirectory(initDir);
+        if(mInitialDirectory != null && !mInitialDirectory.isEmpty() ) {
+            File initDir = new File(mInitialDirectory);
+            if (initDir.exists())
+                mNavigationHelper.changeDirectory(initDir);
+        }
     }
 
     @Override
