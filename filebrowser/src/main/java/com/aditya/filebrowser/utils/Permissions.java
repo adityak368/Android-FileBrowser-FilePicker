@@ -47,6 +47,9 @@ public class Permissions extends AppCompatActivity {
                         permissionsToBeAsked.toArray(new String[permissionsToBeAsked.size()]),
                         APP_PERMISSIONS_REQUEST);
             }
+        } else {
+            setResult(Activity.RESULT_OK);
+            finish();
         }
     }
 
