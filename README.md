@@ -9,13 +9,13 @@ A FileBrowser / FileChooser for Android that you can integrate to your app to br
 <dependency>
   <groupId>com.adityak</groupId>
   <artifactId>browsemyfiles</artifactId>
-  <version>1.5.1</version>
+  <version>1.6</version>
   <type>pom</type>
 </dependency>
 ```
 # Or Using Gradle
 ```
-compile 'com.adityak:browsemyfiles:1.5.1'
+compile 'com.adityak:browsemyfiles:1.6'
 ```
 
 
