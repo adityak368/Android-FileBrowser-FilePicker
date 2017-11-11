@@ -1,6 +1,9 @@
 package com.aditya.filebrowser.models;
 
 import com.aditya.filebrowser.interfaces.ITrackSelection;
+import com.aditya.filebrowser.utils.AssortedUtils;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 
@@ -16,8 +19,16 @@ public class FileItem implements ITrackSelection {
         this.file = file;
     }
 
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
+    }
     File file;
     boolean isSelected;
+    String fileSize;
 
     @Override
     public boolean isSelected() {
@@ -31,5 +42,14 @@ public class FileItem implements ITrackSelection {
 
     public FileItem(File file) {
         this.file = file;
+        try {
+            if (file.isDirectory()) {
+                setFileSize(FileUtils.byteCountToDisplaySize(AssortedUtils.GetMinimumDirSize(file)) +  " | ");
+            } else {
+                setFileSize(FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(file)) +  " | ");
+            }
+        } catch (Exception e) {
+            setFileSize("Unknown | ");
+        }
     }
 }

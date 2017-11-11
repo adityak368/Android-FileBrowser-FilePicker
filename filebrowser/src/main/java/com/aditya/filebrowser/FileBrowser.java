@@ -46,6 +46,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -78,7 +79,7 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
     private MenuItem mSearchMenuItem;
     private SearchViewListener mSearchViewListener;
     private Handler mUIUpdateHandler;
-    private List<FileItem> mFileList;
+    private List<FileItem> mFileList = new ArrayList<>();
 
     private String mInitialDirectory;
     private String mFilterFilesWithExtension;

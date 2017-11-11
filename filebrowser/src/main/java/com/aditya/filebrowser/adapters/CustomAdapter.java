@@ -154,11 +154,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             SimpleDateFormat formatter = new SimpleDateFormat(Constants.DATE_FORMAT);
             String fileSize = "";
             if(AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE,mContext).equalsIgnoreCase("true")) {
-                if (f.isDirectory()) {
-                    fileSize = FileUtils.byteCountToDisplaySize(FileUtils.sizeOfDirectory(f)) +  " | ";
-                } else {
-                    fileSize = FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(f)) +  " | ";
-                }
+                fileSize = filteredfileList.get(position).getFileSize();
             }
             holder.fileModified.setText(fileSize + "Last Modified : " + formatter.format(d));
         } catch (Exception e) {

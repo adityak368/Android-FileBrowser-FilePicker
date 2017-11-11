@@ -74,7 +74,7 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
     private MenuItem mSearchMenuItem;
     private SearchViewListener mSearchViewListener;
     private Handler mUIUpdateHandler;
-    private List<FileItem> mFileList;
+    private List<FileItem> mFileList = new ArrayList<>();
 
     private String mInitialDirectory;
     private String mFilterFilesWithExtension;
@@ -163,7 +163,7 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
         mCurrentPath = (TextView) findViewById(R.id.currentPath);
 
         mFilesList = (FastScrollRecyclerView) findViewById(R.id.recycler_view);
-        mAdapter = new CustomAdapter(mNavigationHelper.getFilesItemsInCurrentDirectory(),mContext);
+        mAdapter = new CustomAdapter(mFileList,mContext);
         mFilesList.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(mContext);
         mFilesList.setLayoutManager(mLayoutManager);

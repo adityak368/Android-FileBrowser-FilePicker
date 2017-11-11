@@ -209,23 +209,31 @@ public class FileIO {
     public void getProperties(List<FileItem> selectedItems) {
 
         StringBuilder msg = new StringBuilder();
-        if(selectedItems.size()==1) {
-            boolean isDirectory = (selectedItems.get(0).getFile().isDirectory());
-            String type = isDirectory?"Directory":"File";
-            String size = FileUtils.byteCountToDisplaySize(isDirectory?FileUtils.sizeOfDirectory(selectedItems.get(0).getFile()):FileUtils.sizeOf(selectedItems.get(0).getFile()));
-            String lastModified = new SimpleDateFormat(Constants.DATE_FORMAT).format(selectedItems.get(0).getFile().lastModified());
-            msg.append("Type : " + type + "\n\n");
-            msg.append("Size : " + size + "\n\n");
-            msg.append("Last Modified : " + lastModified + "\n\n");
-            msg.append("Path : "+selectedItems.get(0).getFile().getAbsolutePath());
-        } else {
-            long totalSize = 0;
-            for(int i=0;i<selectedItems.size();i++) {
-                boolean isDirectory = (selectedItems.get(i).getFile().isDirectory());
-                totalSize += isDirectory?FileUtils.sizeOfDirectory(selectedItems.get(i).getFile()):FileUtils.sizeOf(selectedItems.get(i).getFile());
+        try {
+            if(selectedItems.size()==1) {
+                boolean isDirectory = false;
+                File f = selectedItems.get(0).getFile().getCanonicalFile();
+                isDirectory = (f.isDirectory());
+                String type = isDirectory?"Directory":"File";
+                String size = FileUtils.byteCountToDisplaySize(isDirectory?FileUtils.sizeOfDirectory(f):FileUtils.sizeOf(f));
+                String lastModified = new SimpleDateFormat(Constants.DATE_FORMAT).format(selectedItems.get(0).getFile().lastModified());
+                msg.append("Type : " + type + "\n\n");
+                msg.append("Size : " + size + "\n\n");
+                msg.append("Last Modified : " + lastModified + "\n\n");
+                msg.append("Path : "+selectedItems.get(0).getFile().getAbsolutePath());
+            } else {
+                long totalSize = 0;
+                for(int i=0;i<selectedItems.size();i++) {
+                    File f = selectedItems.get(0).getFile().getCanonicalFile();
+                    boolean isDirectory = (f.isDirectory());
+                    totalSize += isDirectory?FileUtils.sizeOfDirectory(f):FileUtils.sizeOf(f);
+                }
+                msg.append("Type : " + "Multiple Files" + "\n\n");
+                msg.append("Size : " + FileUtils.byteCountToDisplaySize(totalSize) + "\n\n");
             }
-            msg.append("Type : " + "Multiple Files" + "\n\n");
-            msg.append("Size : " + FileUtils.byteCountToDisplaySize(totalSize) + "\n\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.append("Could Not Compute Properties");
         }
         UIUtils.ShowMsg(msg.toString(),"Properties",mContext);
     }

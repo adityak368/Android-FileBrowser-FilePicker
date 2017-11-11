@@ -43,6 +43,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -75,7 +76,7 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
     private MenuItem mSearchMenuItem;
     private SearchViewListener mSearchViewListener;
     private Handler mUIUpdateHandler;
-    private List<FileItem> mFileList;
+    private List<FileItem> mFileList = new ArrayList<>();
 
     private String mInitialDirectory;
     private String mFilterFilesWithExtension;
@@ -194,7 +195,7 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
         mCurrentPath = (TextView) findViewById(R.id.currentPath);
 
         mFilesList = (FastScrollRecyclerView) findViewById(R.id.recycler_view);
-        mAdapter = new CustomAdapter(mNavigationHelper.getFilesItemsInCurrentDirectory(),mContext);
+        mAdapter = new CustomAdapter(mFileList,mContext);
         mFilesList.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(mContext);
         mFilesList.setLayoutManager(mLayoutManager);
