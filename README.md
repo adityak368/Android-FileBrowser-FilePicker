@@ -154,7 +154,7 @@ i.putExtra(Constants.ALLOWED_FILE_EXTENSIONS, "mkv;mp4;avi");
 Use file extensions delimited by semicolon
 
 ### Known Issues
-Currently folder size is calculated using Java's Api getTotalSpace() which gives the size of the partition of the pathpf which may not always give the desired result.
+Currently folder size is calculated using Java's Api getTotalSpace() which gives the size of the partition of the path which may not always give the desired result.
 To get the exact size, properties can be used which gives the exact result. If Exact size is to be known, then UI would lag as it would take some time to calculate size - Fix for this is postponed
 
 
