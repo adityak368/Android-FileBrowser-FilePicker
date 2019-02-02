@@ -82,11 +82,11 @@ public class ToolbarActionMode implements ActionMode.Callback{
         }
         else if(item.getItemId()==R.id.action_rename) {
             if (selectedItems.size() != 1) {
-                UIUtils.ShowToast("Please select a single item", mActivity);
+                UIUtils.ShowToast(mActivity.getString(R.string.selection_error_single), mActivity);
                 return false;
             }
             if (!selectedItems.get(0).getFile().canWrite()) {
-                UIUtils.ShowToast("No write permission available", mActivity);
+                UIUtils.ShowToast(mActivity.getString(R.string.permission_error), mActivity);
                 return false;
             }
             io.renameFile(selectedItems.get(0));

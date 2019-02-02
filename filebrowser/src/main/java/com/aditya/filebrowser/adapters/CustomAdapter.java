@@ -137,8 +137,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
-        File f = filteredfileList.get(position).getFile();
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+        File f = filteredfileList.get(holder.getAdapterPosition()).getFile();
         holder.fileIcon.setImageResource(FileResolution.getFileIcon(f));
         int length = 0;
         String children = "";
@@ -154,9 +154,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             SimpleDateFormat formatter = new SimpleDateFormat(Constants.DATE_FORMAT);
             String fileSize = "";
             if(AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE,mContext).equalsIgnoreCase("true")) {
-                fileSize = filteredfileList.get(position).getFileSize();
+                fileSize = filteredfileList.get(holder.getAdapterPosition()).getFileSize();
             }
-            holder.fileModified.setText(fileSize + "Last Modified : " + formatter.format(d));
+            holder.fileModified.setText(mContext.getString(R.string.file_info,fileSize,formatter.format(d)));
         } catch (Exception e) {
 
         }
@@ -164,10 +164,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             holder.selectcb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    filteredfileList.get(position).setSelected(isChecked);
+                    filteredfileList.get(holder.getAdapterPosition()).setSelected(isChecked);
                 }
             });
-            holder.selectcb.setChecked(filteredfileList.get(position).isSelected());
+            holder.selectcb.setChecked(filteredfileList.get(holder.getAdapterPosition()).isSelected());
         } else {
             holder.selectcb.setVisibility(View.GONE);
         }

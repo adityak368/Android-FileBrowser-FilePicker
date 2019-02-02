@@ -3,19 +3,19 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.adityak'
     PUBLISH_ARTIFACT_ID = 'browsemyfiles'
-    PUBLISH_VERSION = '1.7'
+    PUBLISH_VERSION = '1.8'
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         //applicationId "com.aditya.filebrowser"
         minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 9
-        versionName "1.7"
+        targetSdkVersion 27
+        versionCode 10
+        versionName "1.8"
     }
     buildTypes {
         release {
@@ -26,14 +26,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:recyclerview-v7:25.3.0'
-    compile 'com.beardedhen:androidbootstrap:2.3.1'
-    compile 'com.roughike:bottom-bar:2.3.1'
-    compile 'com.simplecityapps:recyclerview-fastscroll:1.0.14'
-    compile files('libs/commons-io-2.5.jar')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.beardedhen:androidbootstrap:2.3.1'
+    implementation 'com.roughike:bottom-bar:2.3.1'
+    implementation 'com.simplecityapps:recyclerview-fastscroll:1.0.20'
+    implementation files('libs/commons-io-2.6.jar')
 }
 
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

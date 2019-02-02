@@ -22,9 +22,9 @@ public class UIUtils {
 	{
 		AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(context);                      
 	    dlgAlert.setMessage(msg);
-	    dlgAlert.setTitle("Error");
+	    dlgAlert.setTitle(context.getString(R.string.error_common));
 	    dlgAlert.setIcon(android.R.drawable.ic_dialog_alert);
-	    dlgAlert.setPositiveButton("OK", new OnClickListener() {
+	    dlgAlert.setPositiveButton(context.getString(R.string.ok), new OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface popup, int arg1) {
@@ -42,7 +42,7 @@ public class UIUtils {
 	    dlgAlert.setMessage(msg);
 	    dlgAlert.setTitle(title);
 	    dlgAlert.setIcon(android.R.drawable.ic_dialog_info);
-	    dlgAlert.setPositiveButton("OK", new OnClickListener() {
+	    dlgAlert.setPositiveButton(context.getString(R.string.ok), new OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface popup, int arg1) {

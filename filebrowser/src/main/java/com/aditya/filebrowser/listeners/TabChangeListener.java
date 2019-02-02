@@ -71,7 +71,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                 mNavigationHelper.triggerFileChanged();
             }
             else if(tabId==R.id.menu_filter) {
-                UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.filter_options), "Filter Only", new RadioGroup.OnCheckedChangeListener() {
+                UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.filter_options), mActivity.getString(R.string.filter_only), new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int position) {
                         Operations op = Operations.getInstance(mActivity);
@@ -83,7 +83,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                 });
             }
             else if(tabId==R.id.menu_sort) {
-                UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.sort_options), "Sort By", new RadioGroup.OnCheckedChangeListener() {
+                UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.sort_options), mActivity.getString(R.string.sort_by), new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int position) {
                         Operations op = Operations.getInstance(mActivity);
@@ -137,7 +137,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                             mActivity.setResult(Activity.RESULT_OK, data);
                             mActivity.finish();
                         } else {
-                            UIUtils.ShowToast("Please select only 1 item",mActivity);
+                            UIUtils.ShowToast(mActivity.getString(R.string.selection_error_single),mActivity);
                         }
                     } else {
                         Intent data = new Intent();

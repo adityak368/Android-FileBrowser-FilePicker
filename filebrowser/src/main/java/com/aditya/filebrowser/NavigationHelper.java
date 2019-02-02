@@ -60,7 +60,7 @@ public class NavigationHelper {
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             mFileNavigator.setmCurrentNode(Constants.externalStorageRoot);
         } else {
-            UIUtils.ShowToast("Cannot Locate External Storage",mContext);
+            UIUtils.ShowToast(mContext.getString(R.string.external_storage_error),mContext);
         }
         triggerFileChanged();
     }

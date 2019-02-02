@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,7 +61,7 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
 
     private CustomAdapter mAdapter;
     private FastScrollRecyclerView.LayoutManager mLayoutManager;
-    private FastScrollRecyclerView mFilesList;
+    private FastScrollRecyclerView mFilesListView;
 
     private BottomBar mBottomView;
     private BottomBar mPathChange;
@@ -129,7 +130,7 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==APP_PERMISSION_REQUEST ) {
             if(resultCode != Activity.RESULT_OK)
-                Toast.makeText(mContext,"Some permissions not granted!. App may not work properly!. Please grant the required permissions!",Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext,mContext.getString(R.string.error_no_permissions),Toast.LENGTH_LONG).show();
             loadUi();
         }
     }
@@ -160,7 +161,7 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
                 onFileChanged(mNavigationHelper.getCurrentDirectory());
             }
             else if (item.getItemId()== R.id.action_newfolder)  {
-                UIUtils.showEditTextDialog(this, "Folder Name", "" , new IFuncPtr(){
+                UIUtils.showEditTextDialog(this, getString(R.string.new_folder), "" , new IFuncPtr(){
                     @Override
                     public void execute(final String val) {
                         io.createDirectory(new File(mNavigationHelper.getCurrentDirectory(),val.trim()));
@@ -169,11 +170,11 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
             }
             else if(item.getItemId()== R.id.action_paste) {
                 if (op.getOperation() == Operations.FILE_OPERATIONS.NONE) {
-                    UIUtils.ShowToast("No operation selected", mContext);
+                    UIUtils.ShowToast(mContext.getString(R.string.no_operation_error), mContext);
                     return false;
                 }
                 if(op.getSelectedFiles()==null) {
-                    UIUtils.ShowToast("No files selected to paste", mContext);
+                    UIUtils.ShowToast(mContext.getString(R.string.no_files_paste), mContext);
                     return false;
                 }
                 io.pasteFiles(mNavigationHelper.getCurrentDirectory());
@@ -197,12 +198,12 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         setContentView(R.layout.filebrowser_activity_main);
 
         mCurrentPath = (TextView) findViewById(R.id.currentPath);
-        mFilesList = (FastScrollRecyclerView) findViewById(R.id.recycler_view);
+        mFilesListView = (FastScrollRecyclerView) findViewById(R.id.recycler_view);
         mAdapter = new CustomAdapter(mFileList,mContext);
-        mFilesList.setAdapter(mAdapter);
+        mFilesListView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(mContext);
-        mFilesList.setLayoutManager(mLayoutManager);
-        final CustomAdapterItemClickListener onItemClickListener = new CustomAdapterItemClickListener(mContext, mFilesList, new CustomAdapterItemClickListener.OnItemClickListener() {
+        mFilesListView.setLayoutManager(mLayoutManager);
+        final CustomAdapterItemClickListener onItemClickListener = new CustomAdapterItemClickListener(mContext, mFilesListView, new CustomAdapterItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 // TODO Handle item click
@@ -215,12 +216,14 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
                         MimeTypeMap mimeMap = MimeTypeMap.getSingleton();
                         Intent openFileIntent = new Intent(Intent.ACTION_VIEW);
                         String mimeType = mimeMap.getMimeTypeFromExtension(FilenameUtils.getExtension(f.getName()));
-                        openFileIntent.setDataAndType(Uri.fromFile(f),mimeType);
+                        Uri uri = FileProvider.getUriForFile(mContext,"com.aditya.filebrowser.provider", f);
+                        openFileIntent.setDataAndType(uri,mimeType);
                         openFileIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        openFileIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         try {
                             mContext.startActivity(openFileIntent);
                         } catch (ActivityNotFoundException e) {
-                            Toast.makeText(mContext, "No app found to handle this type of file.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.no_app_to_handle), Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -230,12 +233,12 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
             public void onItemLongClick(View view, int position) {
                 switchMode(Constants.CHOICE_MODE.MULTI_CHOICE);
                 mAdapter.selectItem(position);
-                mFilesList.scrollToPosition(position);
+                mFilesListView.scrollToPosition(position);
             }
         });
-        mFilesList.addOnItemTouchListener(onItemClickListener);
+        mFilesListView.addOnItemTouchListener(onItemClickListener);
 
-        mFilesList.setStateChangeListener(new OnFastScrollStateChangeListener() {
+        mFilesListView.setOnFastScrollStateChangeListener(new OnFastScrollStateChangeListener() {
             @Override
             public void onFastScrollStart() {
                 onItemClickListener.setmFastScrolling(true);
@@ -256,7 +259,7 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         mPathChange = (BottomBar) findViewById(R.id.currPath_Nav);
 
         mTabChangeListener = new TabChangeListener(this,mNavigationHelper,mAdapter,io,this);
-        mTabChangeListener.setmRecyclerView(mFilesList);
+        mTabChangeListener.setmRecyclerView(mFilesListView);
 
         mBottomView.setOnTabSelectListener(mTabChangeListener);
         mBottomView.setOnTabReselectListener(mTabChangeListener);
@@ -286,7 +289,7 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
                 closeSearchView();
                 ToolbarActionMode newToolBar = new ToolbarActionMode(this,this,mAdapter,Constants.APP_MODE.FILE_BROWSER,io);
                 mActionMode = startSupportActionMode(newToolBar);
-                mActionMode.setTitle("Select Multiple Files");
+                mActionMode.setTitle(mContext.getString(R.string.select_multiple));
             }
         }
     }
@@ -311,9 +314,9 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
 
     @Override
     public void reDrawFileList() {
-        mFilesList.setLayoutManager(null);
-        mFilesList.setAdapter(mAdapter);
-        mFilesList.setLayoutManager(mLayoutManager);
+        mFilesListView.setLayoutManager(null);
+        mFilesListView.setAdapter(mAdapter);
+        mFilesListView.setLayoutManager(mLayoutManager);
         mTabChangeListener.setmAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }

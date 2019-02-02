@@ -35,11 +35,15 @@ public class FileNavigator {
            FilenameFilter fileNameFilter = new FilenameFilter() {
                @Override
                public boolean accept(File dir, String name) {
+                   File absolutePath = new File(dir, name);
+                   if (absolutePath.isDirectory()) {
+                       return  true;
+                   }
                    String fileExtension = FilenameUtils.getExtension(name);
-                   if(mAllowedFileExtensionFilter.contains(fileExtension) || fileExtension.isEmpty() )
+                   if(mAllowedFileExtensionFilter.contains(fileExtension)) {
                        return true;
-                   else
-                       return false;
+                   }
+                   return false;
                }
            };
            return mCurrentNode.listFiles(fileNameFilter);

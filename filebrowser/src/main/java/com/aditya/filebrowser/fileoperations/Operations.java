@@ -3,6 +3,7 @@ package com.aditya.filebrowser.fileoperations;
 import android.content.Context;
 
 import com.aditya.filebrowser.Constants;
+import com.aditya.filebrowser.R;
 import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.UIUtils;
 
@@ -44,7 +45,7 @@ public class Operations {
 
     public void setSelectedFiles(List<FileItem> selectedItems) {
         this.selectedFiles = selectedItems;
-        UIUtils.ShowToast("Selected "+selectedItems.size()+" items",mContext);
+        UIUtils.ShowToast(mContext.getString(R.string.selected_items,selectedItems.size()),mContext);
     }
 
     private static Operations op;

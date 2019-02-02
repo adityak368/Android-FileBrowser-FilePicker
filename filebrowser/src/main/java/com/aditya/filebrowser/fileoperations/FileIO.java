@@ -57,25 +57,25 @@ public class FileIO {
                         mUIUpdateHandler.post(mHelper.updateRunner());
                     } catch (IOException e) {
                         e.printStackTrace();
-                        mUIUpdateHandler.post(mHelper.errorRunner("An error occurred while creating a new folder"));
+                        mUIUpdateHandler.post(mHelper.errorRunner(mContext.getString(R.string.folder_creation_error)));
                     }
                 }
             });
         } else {
-            UIUtils.ShowToast("No Write Permission Granted",mContext);
+            UIUtils.ShowToast(mContext.getString(R.string.permission_error),mContext);
         }
     }
 
     public void deleteItems(final List<FileItem> selectedItems) {
         if(selectedItems!=null && selectedItems.size()>0) {
             AlertDialog confirmDialog = new AlertDialog.Builder(mContext)
-                    .setTitle("Delete Files")
-                    .setMessage("Are you sure you want to delete " + selectedItems.size() + " items?")
+                    .setTitle(mContext.getString(R.string.delete_dialog_title))
+                    .setMessage(mContext.getString(R.string.delete_dialog_message,selectedItems.size()))
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // continue with delete
                             final ProgressDialog progressDialog = new ProgressDialog(mContext);
-                            progressDialog.setTitle("Deleting Please Wait... ");
+                            progressDialog.setTitle(mContext.getString(R.string.delete_progress));
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                             progressDialog.setCancelable(false);
                             progressDialog.setProgress(0);
@@ -101,7 +101,7 @@ public class FileIO {
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         mUIUpdateHandler.post(mHelper.toggleProgressBarVisibility(progressDialog));
-                                        mUIUpdateHandler.post(mHelper.errorRunner("An error occurred while deleting "));
+                                        mUIUpdateHandler.post(mHelper.errorRunner(mContext.getString(R.string.delete_error)));
                                     }
                                 }
                             });
@@ -116,7 +116,7 @@ public class FileIO {
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         } else {
-            UIUtils.ShowToast("No Items Selected!",mContext);
+            UIUtils.ShowToast(mContext.getString(R.string.no_items_selected),mContext);
         }
     }
 
@@ -128,12 +128,12 @@ public class FileIO {
         if(destination.canWrite()) {
             if (selectedItems != null && selectedItems.size() > 0) {
                 final ProgressDialog progressDialog = new ProgressDialog(mContext);
-                String title = "Please Wait... ";
+                String title = mContext.getString(R.string.wait);
                 progressDialog.setTitle(title);
                 if (operation == Operations.FILE_OPERATIONS.COPY)
-                    progressDialog.setTitle("Copying " + title);
+                    progressDialog.setTitle(mContext.getString(R.string.copying,title));
                 else if (operation == Operations.FILE_OPERATIONS.CUT)
-                    progressDialog.setTitle("Moving " + title);
+                    progressDialog.setTitle(mContext.getString(R.string.moving,title));
 
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setCancelable(false);
@@ -171,20 +171,20 @@ public class FileIO {
                         } catch (IOException e) {
                             e.printStackTrace();
                             mUIUpdateHandler.post(mHelper.toggleProgressBarVisibility(progressDialog));
-                            mUIUpdateHandler.post(mHelper.errorRunner("An error occurred while pasting "));
+                            mUIUpdateHandler.post(mHelper.errorRunner(mContext.getString(R.string.pasting_error)));
                         }
                     }
                 });
             } else {
-                UIUtils.ShowToast("No Items Selected!", mContext);
+                UIUtils.ShowToast(mContext.getString(R.string.no_items_selected), mContext);
             }
         } else {
-            UIUtils.ShowToast("No Write permissions for the paste directory",mContext);
+            UIUtils.ShowToast(mContext.getString(R.string.permission_error),mContext);
         }
     }
 
     public void renameFile(final FileItem fileItem) {
-        UIUtils.showEditTextDialog(mContext, "Rename", fileItem.getFile().getName() ,new IFuncPtr() {
+        UIUtils.showEditTextDialog(mContext, mContext.getString(R.string.rename_dialog_title), fileItem.getFile().getName() ,new IFuncPtr() {
             @Override
             public void execute(final String val) {
                 executor.execute(new Runnable() {
@@ -198,7 +198,7 @@ public class FileIO {
                             mUIUpdateHandler.post(mHelper.updateRunner());
                         } catch (Exception e) {
                             e.printStackTrace();
-                            mUIUpdateHandler.post(mHelper.errorRunner("An error occurred while renaming "));
+                            mUIUpdateHandler.post(mHelper.errorRunner(mContext.getString(R.string.rename_error)));
                         }
                     }
                 });
@@ -214,13 +214,13 @@ public class FileIO {
                 boolean isDirectory = false;
                 File f = selectedItems.get(0).getFile().getCanonicalFile();
                 isDirectory = (f.isDirectory());
-                String type = isDirectory?"Directory":"File";
+                String type = isDirectory?mContext.getString(R.string.directory):mContext.getString(R.string.file);
                 String size = FileUtils.byteCountToDisplaySize(isDirectory?FileUtils.sizeOfDirectory(f):FileUtils.sizeOf(f));
                 String lastModified = new SimpleDateFormat(Constants.DATE_FORMAT).format(selectedItems.get(0).getFile().lastModified());
-                msg.append("Type : " + type + "\n\n");
-                msg.append("Size : " + size + "\n\n");
-                msg.append("Last Modified : " + lastModified + "\n\n");
-                msg.append("Path : "+selectedItems.get(0).getFile().getAbsolutePath());
+                msg.append(mContext.getString(R.string.file_type,type));
+                msg.append(mContext.getString(R.string.file_size,size));
+                msg.append(mContext.getString(R.string.file_modified,lastModified));
+                msg.append(mContext.getString(R.string.file_path,selectedItems.get(0).getFile().getAbsolutePath()));
             } else {
                 long totalSize = 0;
                 for(int i=0;i<selectedItems.size();i++) {
@@ -228,14 +228,14 @@ public class FileIO {
                     boolean isDirectory = (f.isDirectory());
                     totalSize += isDirectory?FileUtils.sizeOfDirectory(f):FileUtils.sizeOf(f);
                 }
-                msg.append("Type : " + "Multiple Files" + "\n\n");
-                msg.append("Size : " + FileUtils.byteCountToDisplaySize(totalSize) + "\n\n");
+                msg.append(mContext.getString(R.string.file_type_plain)+" "+mContext.getString(R.string.file_type_multiple));
+                msg.append(mContext.getString(R.string.file_size,FileUtils.byteCountToDisplaySize(totalSize)));
             }
         } catch (Exception e) {
             e.printStackTrace();
-            msg.append("Could Not Compute Properties");
+            msg.append(mContext.getString(R.string.property_error));
         }
-        UIUtils.ShowMsg(msg.toString(),"Properties",mContext);
+        UIUtils.ShowMsg(msg.toString(),mContext.getString(R.string.properties_title),mContext);
     }
 
     public void shareMultipleFiles(List<FileItem> filesToBeShared){
@@ -252,7 +252,7 @@ public class FileIO {
         if (infos.size() > 0) {
             mContext.startActivity(Intent.createChooser(intent, mContext.getString(R.string.share)));
         } else {
-            UIUtils.ShowToast("No app found to handle sharing",mContext);
+            UIUtils.ShowToast(mContext.getString(R.string.sharing_no_app),mContext);
         }
     }
 }

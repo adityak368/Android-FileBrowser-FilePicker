@@ -53,6 +53,9 @@ public class Constants {
     public static final String EXTERNALSTORAGE = "External Storage";
     public static File internalStorageRoot = Environment.getExternalStorageDirectory();
     public static File externalStorageRoot;
+    public static final String SHOW_FOLDER_SIZE = "false";
+    public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
+	
     static {
 
         try {
@@ -76,7 +79,4 @@ public class Constants {
             externalStorageRoot = new File("/");
         }
     }
-
-    public static final String SHOW_FOLDER_SIZE = "false";
-    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 }

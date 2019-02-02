@@ -53,7 +53,7 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
 
     private CustomAdapter mAdapter;
     private FastScrollRecyclerView.LayoutManager mLayoutManager;
-    private FastScrollRecyclerView mFilesList;
+    private FastScrollRecyclerView mFilesListView;
 
     private BottomBar mBottomView;
     private BottomBar mPathChange;
@@ -125,7 +125,7 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==APP_PERMISSION_REQUEST ) {
             if(resultCode != Activity.RESULT_OK)
-                Toast.makeText(mContext,"Some permissions not granted!. App may not work properly!. Please grant the required permissions!",Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext,mContext.getString(R.string.permission_error),Toast.LENGTH_LONG).show();
             loadUi();
         }
     }
@@ -162,12 +162,12 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
         setContentView(R.layout.filebrowser_activity_main);
         mCurrentPath = (TextView) findViewById(R.id.currentPath);
 
-        mFilesList = (FastScrollRecyclerView) findViewById(R.id.recycler_view);
+        mFilesListView = (FastScrollRecyclerView) findViewById(R.id.recycler_view);
         mAdapter = new CustomAdapter(mFileList,mContext);
-        mFilesList.setAdapter(mAdapter);
+        mFilesListView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(mContext);
-        mFilesList.setLayoutManager(mLayoutManager);
-        final CustomAdapterItemClickListener onItemClickListener = new CustomAdapterItemClickListener(mContext, mFilesList, new CustomAdapterItemClickListener.OnItemClickListener() {
+        mFilesListView.setLayoutManager(mLayoutManager);
+        final CustomAdapterItemClickListener onItemClickListener = new CustomAdapterItemClickListener(mContext, mFilesListView, new CustomAdapterItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 // TODO Handle item click
@@ -199,12 +199,13 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
             public void onItemLongClick(View view, int position) {
                 switchMode(Constants.CHOICE_MODE.MULTI_CHOICE);
                 mAdapter.selectItem(position);
-                mFilesList.scrollToPosition(position);
+                mFilesListView.scrollToPosition(position);
             }
         });
-        mFilesList.addOnItemTouchListener(onItemClickListener);
+        mFilesListView.addOnItemTouchListener(onItemClickListener);
 
-        mFilesList.setStateChangeListener(new OnFastScrollStateChangeListener() {
+        mFilesListView.setOnFastScrollStateChangeListener(new OnFastScrollStateChangeListener() {
+
             @Override
             public void onFastScrollStart() {
                 onItemClickListener.setmFastScrolling(true);
@@ -226,7 +227,7 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
 
         mTabChangeListener = new TabChangeListener(this,mNavigationHelper,mAdapter,io,this);
         mTabChangeListener.setSelectionMode(Constants.SELECTION_MODES.values()[mSelectionMode]);
-        mTabChangeListener.setmRecyclerView(mFilesList);
+        mTabChangeListener.setmRecyclerView(mFilesListView);
 
         mBottomView.setOnTabSelectListener(mTabChangeListener);
         mBottomView.setOnTabReselectListener(mTabChangeListener);
@@ -257,7 +258,7 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
                 closeSearchView();
                 ToolbarActionMode newToolBar = new ToolbarActionMode(this,this,mAdapter,Constants.APP_MODE.FILE_CHOOSER,io);
                 mActionMode = startSupportActionMode(newToolBar);
-                mActionMode.setTitle("Select Multiple Files");
+                mActionMode.setTitle(mContext.getString(R.string.select_multiple));
             }
         }
     }
@@ -286,9 +287,9 @@ public class FileChooser extends AppCompatActivity implements OnFileChangedListe
 
     @Override
     public void reDrawFileList() {
-        mFilesList.setLayoutManager(null);
-        mFilesList.setAdapter(mAdapter);
-        mFilesList.setLayoutManager(mLayoutManager);
+        mFilesListView.setLayoutManager(null);
+        mFilesListView.setAdapter(mAdapter);
+        mFilesListView.setLayoutManager(mLayoutManager);
         mTabChangeListener.setmAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }

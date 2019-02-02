@@ -22,8 +22,8 @@
         <com.beardedhen.androidbootstrap.BootstrapButton
             android:layout_alignParentRight="true"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="Ok"
+            android:layout_height="40dp"
+            android:text="@string/ok"
             app:bootstrapSize="md"
             android:layout_margin="10dp"
             android:id="@+id/okbutton"
