@@ -38,6 +38,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         notifyDataSetChanged();
     }
 
+    public void unSelectAll() {
+        for(int i=0;i<fileList.size();i++) {
+            filteredfileList.get(i).setSelected(false);
+        }
+        notifyDataSetChanged();
+    }
+
     public void selectItem(int position) {
         filteredfileList.get(position).setSelected(true);
         notifyDataSetChanged();

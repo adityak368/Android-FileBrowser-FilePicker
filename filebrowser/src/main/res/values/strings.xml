@@ -69,6 +69,7 @@
     <string name="no_app_to_handle">No app found to handle this type of file.</string>
     <string name="select_multiple">Select Multiple Files</string>
     <string name="external_storage_error">Cannot Locate External Store</string>
+    <string name="unselectall">Unselect All</string>
     <string-array name="filter_options">
         <item>Files</item>
         <item>Folders</item>

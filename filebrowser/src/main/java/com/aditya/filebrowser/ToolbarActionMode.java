@@ -95,6 +95,9 @@ public class ToolbarActionMode implements ActionMode.Callback{
         else if(item.getItemId()==R.id.action_selectall) {
             mAdapter.selectAll();
         }
+        else if(item.getItemId()==R.id.action_unselectall) {
+            mAdapter.unSelectAll();
+        }
         return false;
     }
 }

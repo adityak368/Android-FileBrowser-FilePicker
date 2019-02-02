@@ -91,7 +91,7 @@ public class FileIO {
                                         for (; i < selectedItems.size(); i++) {
                                             mUIUpdateHandler.post(mHelper.progressUpdater(progressDialog, (int)((i/TOTAL_ITEMS)*100), "File: "+selectedItems.get(i).getFile().getName()));
                                             if (selectedItems.get(i).getFile().isDirectory()) {
-                                                FileUtils.deleteDirectory(selectedItems.get(i).getFile());
+                                                removeDir(selectedItems.get(i).getFile());
                                             } else {
                                                 FileUtils.forceDelete(selectedItems.get(i).getFile());
                                             }
@@ -215,7 +215,7 @@ public class FileIO {
                 File f = selectedItems.get(0).getFile().getCanonicalFile();
                 isDirectory = (f.isDirectory());
                 String type = isDirectory?mContext.getString(R.string.directory):mContext.getString(R.string.file);
-                String size = FileUtils.byteCountToDisplaySize(isDirectory?FileUtils.sizeOfDirectory(f):FileUtils.sizeOf(f));
+                String size = FileUtils.byteCountToDisplaySize(isDirectory ? getDirSize(f):FileUtils.sizeOf(f));
                 String lastModified = new SimpleDateFormat(Constants.DATE_FORMAT).format(selectedItems.get(0).getFile().lastModified());
                 msg.append(mContext.getString(R.string.file_type,type));
                 msg.append(mContext.getString(R.string.file_size,size));
@@ -226,7 +226,7 @@ public class FileIO {
                 for(int i=0;i<selectedItems.size();i++) {
                     File f = selectedItems.get(0).getFile().getCanonicalFile();
                     boolean isDirectory = (f.isDirectory());
-                    totalSize += isDirectory?FileUtils.sizeOfDirectory(f):FileUtils.sizeOf(f);
+                    totalSize += isDirectory ? getDirSize(f):FileUtils.sizeOf(f);
                 }
                 msg.append(mContext.getString(R.string.file_type_plain)+" "+mContext.getString(R.string.file_type_multiple));
                 msg.append(mContext.getString(R.string.file_size,FileUtils.byteCountToDisplaySize(totalSize)));
@@ -254,5 +254,54 @@ public class FileIO {
         } else {
             UIUtils.ShowToast(mContext.getString(R.string.sharing_no_app),mContext);
         }
+    }
+
+    private boolean removeDir(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                removeDir(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
+
+    private long getDirSize(File root) {
+        if(root == null){
+            return 0;
+        }
+        if(root.isFile()){
+            return root.length();
+        }
+        try {
+            if(isFileASymLink(root)){
+                return 0;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        long length = 0;
+        File[] files = root.listFiles();
+        if(files == null){
+            return 0;
+        }
+        for (File file : files) {
+            length += getDirSize(file);
+        }
+
+        return length;
+    }
+
+    private static boolean isFileASymLink(File file) throws IOException {
+        File canon;
+        if (file.getParent() == null) {
+            canon = file;
+        } else {
+            File canonDir = file.getParentFile().getCanonicalFile();
+            canon = new File(canonDir, file.getName());
+        }
+        return !canon.getCanonicalFile().equals(canon.getAbsoluteFile());
     }
 }

@@ -9,4 +9,6 @@
         android:icon="@drawable/ic_create_black_24dp" app:showAsAction="ifRoom" />
     <item android:id="@+id/action_selectall" android:title="@string/selectall"
         android:icon="@drawable/ic_format_line_spacing_black_24dp" app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_unselectall" android:title="@string/unselectall"
+        android:icon="@drawable/ic_low_priority_black_24dp" app:showAsAction="ifRoom" />
 </menu>
