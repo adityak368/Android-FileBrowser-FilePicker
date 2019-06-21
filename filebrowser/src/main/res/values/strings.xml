@@ -27,7 +27,7 @@
     <string name="ok">Ok</string>
     <string name="filter_only">Filter Only</string>
     <string name="sort_by">Sort By</string>
-    <string name="file_info">%s Last Mofified: %s</string>
+    <string name="file_info">%1$s Last Modified: %2$s</string>
     <string name="read_only"> (Read only)</string>
     <!-- Folder creation-->
     <string name="folder_creation_error">An error occurred while creating a new folder</string>

@@ -71,6 +71,6 @@
     </string-array>
     <string name="filter_only">Filtern nach</string>
     <string name="sort_by">Sortieren nach</string>
-    <string name="file_info">%s zul. geändert %s</string>
+    <string name="file_info">%1$s zul. geändert %2$s</string>
     <string name="unselectall">Alles wiederufen</string>
 </resources>
