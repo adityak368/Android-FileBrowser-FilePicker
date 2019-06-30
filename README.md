@@ -147,13 +147,6 @@ i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.SINGLE_SELECTION
 startActivityForResult(i2, PICK_FOLDER_REQUEST);
 ```
 
-  - For Multiple Selection
-``` java
-Intent i2 = new Intent(getApplicationContext(), FolderChooser.class);
-i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.MULTIPLE_SELECTION.ordinal());
-startActivityForResult(i2, PICK_FOLDER_REQUEST);
-```
-
 To get the selected folder, In your calling activity's onActivityResult method, use the following
 
 ```java
@@ -161,6 +154,25 @@ To get the selected folder, In your calling activity's onActivityResult method, 
 if (requestCode == PICK_FOLDER_REQUEST && data!=null) {
       if (resultCode == RESULT_OK) {
           Uri file = data.getData();
+      }
+}
+        
+```
+
+  - For Multiple Selection
+``` java
+Intent i2 = new Intent(getApplicationContext(), FolderChooser.class);
+i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.MULTIPLE_SELECTION.ordinal());
+startActivityForResult(i2, PICK_FOLDER_REQUEST);
+```
+
+To get the selected file, In your calling activity's onActivityResult method, use the following
+
+```java
+
+if (requestCode == PICK_FOLDER_REQUEST && data!=null) {
+      if (resultCode == RESULT_OK) {
+          ArrayList<Uri> selectedFiles  = data.getParcelableArrayListExtra(Constants.SELECTED_ITEMS);
       }
 }
         
