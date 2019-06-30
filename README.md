@@ -37,7 +37,8 @@ There are 3 main classes to use the library.
 
 1. FileBrowser - Used to just Browse files in storage (has all file IO features)
 2. FileChooser - Used to select single/multiple files in storage (has some IO features)
-3. FileBrowserWithCustomHandler - Used to run custom code when files are selected (has all IO features)
+3. FolderChooser - Used to select single/multiple folders in storage (has some IO features)
+4. FileBrowserWithCustomHandler - Used to run custom code when files are selected (has all IO features)
 
 # 1. FileBrowser
 Use following Intent to start the FileBrowser
