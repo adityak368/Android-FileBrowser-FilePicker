@@ -9,13 +9,13 @@ A FileBrowser / FileChooser for Android that you can integrate to your app to br
 <dependency>
   <groupId>com.adityak</groupId>
   <artifactId>browsemyfiles</artifactId>
-  <version>1.8</version>
+  <version>1.9</version>
   <type>pom</type>
 </dependency>
 ```
 # Or Using Gradle
 ```
-compile 'com.adityak:browsemyfiles:1.8'
+compile 'com.adityak:browsemyfiles:1.9'
 ```
 
 
@@ -54,8 +54,8 @@ Use following Intent to start the FileChooser
 
 ``` java
 Intent i2 = new Intent(getApplicationContext(), FileChooser.class);
-i2.putExtra(Constants.SELECTION_MODE,Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal());
-startActivityForResult(i2,PICK_FILE_REQUEST);
+i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal());
+startActivityForResult(i2, PICK_FILE_REQUEST);
 ```
 
 
@@ -75,8 +75,8 @@ if (requestCode == PICK_FILE_REQUEST && data!=null) {
   - For Multiple Selection
 ``` java
 Intent i2 = new Intent(getApplicationContext(), FileChooser.class);
-i2.putExtra(Constants.SELECTION_MODE,Constants.SELECTION_MODES.MULTIPLE_SELECTION.ordinal());
-startActivityForResult(i2,PICK_FILE_REQUEST);
+i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.MULTIPLE_SELECTION.ordinal());
+startActivityForResult(i2, PICK_FILE_REQUEST);
 ```
 
 To get the selected file, In your calling activity's onActivityResult method, use the following
@@ -134,6 +134,36 @@ and in the broadcast receiver use the following to get the extras
 
 ``` java
 Bundle b = intent.getExtras()
+```
+
+# 4. FolderChooser
+
+Use following Intent to start the FileChooser
+  - For Single Selection
+
+``` java
+Intent i2 = new Intent(getApplicationContext(), FolderChooser.class);
+i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal());
+startActivityForResult(i2, PICK_FOLDER_REQUEST);
+```
+
+  - For Multiple Selection
+``` java
+Intent i2 = new Intent(getApplicationContext(), FolderChooser.class);
+i2.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.MULTIPLE_SELECTION.ordinal());
+startActivityForResult(i2, PICK_FOLDER_REQUEST);
+```
+
+To get the selected folder, In your calling activity's onActivityResult method, use the following
+
+```java
+
+if (requestCode == PICK_FOLDER_REQUEST && data!=null) {
+      if (resultCode == RESULT_OK) {
+          Uri file = data.getData();
+      }
+}
+        
 ```
 
 ### To load a particular directory instead of the normal root directory
