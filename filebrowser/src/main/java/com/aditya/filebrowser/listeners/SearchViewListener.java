@@ -9,6 +9,8 @@ import com.aditya.filebrowser.adapters.CustomAdapter;
  */
 public class SearchViewListener implements SearchView.OnQueryTextListener {
 
+    CustomAdapter mAdapter;
+
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
@@ -19,8 +21,6 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
         mAdapter.getFilter().filter(newText);
         return false;
     }
-
-    CustomAdapter mAdapter;
 
     public SearchViewListener(CustomAdapter customAdapter) {
         this.mAdapter = customAdapter;

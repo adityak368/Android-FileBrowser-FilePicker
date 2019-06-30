@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> implements Filterable,FastScrollRecyclerView.SectionedAdapter {
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> implements Filterable, FastScrollRecyclerView.SectionedAdapter {
 
     public void selectAll() {
         for(int i=0;i<fileList.size();i++) {

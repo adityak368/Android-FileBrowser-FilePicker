@@ -1,6 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">File Browser</string>
-    <string name="aditya_filebrowser_provider">com.aditya.filebrowser.provider</string>
+    <string name="filebrowser_provider" tools:ignore="MissingTranslation">com.aditya.filebrowser.provider</string>
     <string name="cut">Cut</string>
     <string name="refresh">Refresh</string>
     <string name="paste">Paste</string>
@@ -63,6 +63,7 @@
     <string name="selected_items">Selected %d items</string>
     <string name="selection_error_single">Please select only 1 item</string>
 
+    <string name="permission_request_error">No Permissions Requested</string>
     <string name="error_common">Error</string>
     <string name="error_no_permissions">Some permissions not granted!. App may not work properly!. Please grant the required permissions!</string>
     <string name="no_operation_error">No operation selected</string>
@@ -71,6 +72,9 @@
     <string name="select_multiple">Select Multiple Files</string>
     <string name="external_storage_error">Cannot Locate External Store</string>
     <string name="unselectall">Unselect All</string>
+    <string name="file_image">File Image</string>
+    <string name="select">Select</string>
+    <string name="invalid_selections">Invalid selections</string>
     <string-array name="filter_options">
         <item>Files</item>
         <item>Folders</item>

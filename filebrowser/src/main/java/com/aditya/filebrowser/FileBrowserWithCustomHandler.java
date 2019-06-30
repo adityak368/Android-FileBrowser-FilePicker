@@ -50,60 +50,56 @@ import java.util.List;
 import java.util.Set;
 
 
-public class FileBrowserWithCustomHandler extends AppCompatActivity implements OnFileChangedListener,IContextSwitcher,SearchView.OnQueryTextListener {
+public class FileBrowserWithCustomHandler extends AppCompatActivity implements OnFileChangedListener, IContextSwitcher {
 
     private Context mContext;
-    private Toolbar toolbar;
 
     private CustomAdapter mAdapter;
     private FastScrollRecyclerView.LayoutManager mLayoutManager;
     private FastScrollRecyclerView mFilesListView;
 
     private BottomBar mBottomView;
-    private BottomBar mPathChange;
+    private BottomBar mTopStorageView;
     private TabChangeListener mTabChangeListener;
 
-    TextView mCurrentPath;
+    private TextView mCurrentPath;
     private NavigationHelper mNavigationHelper;
     private Operations op;
     private FileIO io;
+
     //Action Mode for filebrowser_toolbar
     private static ActionMode mActionMode;
     private static final int APP_PERMISSION_REQUEST = 0;
 
-    private Bundle extras;
     private SearchView mSearchView;
     private MenuItem mSearchMenuItem;
     private SearchViewListener mSearchViewListener;
-    private Handler mUIUpdateHandler;
     private List<FileItem> mFileList = new ArrayList<>();
-
-    private String mInitialDirectory;
-    private String mFilterFilesWithExtension;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mContext = this;
+
+        // Get File Storage Permission
         Intent in = new Intent(this, Permissions.class);
-        Bundle b=new Bundle();
-        b.putStringArray(Constants.APP_PREMISSION_KEY, Constants.APP_PREMISSIONS);
-        in.putExtras(b);
-        startActivityForResult(in,APP_PERMISSION_REQUEST);
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(Constants.APP_PREMISSION_KEY, Constants.APP_PREMISSIONS);
+        in.putExtras(bundle);
+        startActivityForResult(in, APP_PERMISSION_REQUEST);
+
+        // Initialize Stuff
         mNavigationHelper = new NavigationHelper(mContext);
         mNavigationHelper.setmChangeDirectoryListener(this);
-        mUIUpdateHandler = new Handler(Looper.getMainLooper());
-        io = new FileIO(mNavigationHelper,mUIUpdateHandler,mContext);
+        io = new FileIO(mNavigationHelper, new Handler(Looper.getMainLooper()), mContext);
         op = Operations.getInstance(mContext);
-        extras = getIntent().getExtras();
 
         //set file filter (i.e display files with the given extension)
-        mFilterFilesWithExtension = getIntent().getStringExtra(Constants.ALLOWED_FILE_EXTENSIONS);
-        if(mFilterFilesWithExtension!=null && !mFilterFilesWithExtension.isEmpty()) {
-            String allowedFileExtension[] = mFilterFilesWithExtension.split(";");
-            Set<String> allowedFilesFilter = new HashSet<String>(Arrays.asList(allowedFileExtension));
-            mNavigationHelper.setAllowedFileExtensionFilter(allowedFilesFilter);
+        String filterFilesWithExtension = getIntent().getStringExtra(Constants.ALLOWED_FILE_EXTENSIONS);
+        if(filterFilesWithExtension != null && !filterFilesWithExtension.isEmpty()) {
+            Set<String> allowedFileExtensions = new HashSet<String>(Arrays.asList(filterFilesWithExtension.split(";")));
+            mNavigationHelper.setAllowedFileExtensionFilter(allowedFileExtensions);
         }
 
         mFileList = mNavigationHelper.getFilesItemsInCurrentDirectory();
@@ -112,12 +108,12 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
     @Override
     public void onBackPressed() {
 
-        if(mAdapter.getChoiceMode()==Constants.CHOICE_MODE.MULTI_CHOICE) {
+        if (mAdapter.getChoiceMode() == Constants.CHOICE_MODE.MULTI_CHOICE) {
             switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
             return;
         }
 
-        if(!mNavigationHelper.navigateBack()) {
+        if (!mNavigationHelper.navigateBack()) {
             super.onBackPressed();
         }
     }
@@ -125,9 +121,9 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==APP_PERMISSION_REQUEST ) {
-            if(resultCode != Activity.RESULT_OK)
-                Toast.makeText(mContext,mContext.getString(R.string.error_no_permissions),Toast.LENGTH_LONG).show();
+        if (requestCode == APP_PERMISSION_REQUEST) {
+            if (resultCode != Activity.RESULT_OK)
+                Toast.makeText(mContext, mContext.getString(R.string.error_no_permissions), Toast.LENGTH_LONG).show();
             loadUi();
         }
     }
@@ -143,39 +139,40 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
         // Assumes current activity is the searchable activity
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         //searchView.setSubmitButtonEnabled(true);
-        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setOnQueryTextListener(mSearchViewListener);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-            if(item.getItemId()==R.id.action_showfoldersizes) {
-                if (AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE, mContext).equalsIgnoreCase("true"))
-                    AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "false", mContext);
-                else
-                    AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "true", mContext);
-                onFileChanged(mNavigationHelper.getCurrentDirectory());
-            }
-            else if(item.getItemId()==R.id.action_newfolder)  {
-                UIUtils.showEditTextDialog(this, getString(R.string.new_folder), "" , new IFuncPtr(){
-                    @Override
-                    public void execute(final String val) {
-                        io.createDirectory(new File(mNavigationHelper.getCurrentDirectory(),val.trim()));
-                    }
-                });
-            }
-            else if(item.getItemId()==R.id.action_paste) {
-                if (op.getOperation() == Operations.FILE_OPERATIONS.NONE) {
-                    UIUtils.ShowToast(mContext.getString(R.string.no_operation_error), mContext);
-                    return false;
+
+        if (item.getItemId() == R.id.action_showfoldersizes) {
+            if (AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE, mContext).equalsIgnoreCase("true"))
+                AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "false", mContext);
+            else
+                AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "true", mContext);
+            onFileChanged(mNavigationHelper.getCurrentDirectory());
+        }
+        else if (item.getItemId() == R.id.action_newfolder) {
+            UIUtils.showEditTextDialog(this, getString(R.string.new_folder), "", new IFuncPtr(){
+                @Override
+                public void execute(final String val) {
+                    io.createDirectory(new File(mNavigationHelper.getCurrentDirectory(),val.trim()));
                 }
-                if(op.getSelectedFiles()==null) {
-                    UIUtils.ShowToast(mContext.getString(R.string.no_files_paste), mContext);
-                    return false;
-                }
-                io.pasteFiles(mNavigationHelper.getCurrentDirectory());
+            });
+        }
+        else if (item.getItemId() == R.id.action_paste) {
+            if (op.getOperation() == Operations.FILE_OPERATIONS.NONE) {
+                UIUtils.ShowToast(mContext.getString(R.string.no_operation_error), mContext);
             }
+            if (op.getSelectedFiles() == null) {
+                UIUtils.ShowToast(mContext.getString(R.string.no_files_paste), mContext);
+            }
+            io.pasteFiles(mNavigationHelper.getCurrentDirectory());
+        }
+
         return false;
+
     }
 
     @Override
@@ -184,9 +181,9 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
             mFileList = mNavigationHelper.getFilesItemsInCurrentDirectory();
             mCurrentPath.setText(updatedDirectory.getAbsolutePath());
             mAdapter.notifyDataSetChanged();
-            mPathChange.getTabWithId(R.id.menu_internal_storage).setTitle(FileUtils.byteCountToDisplaySize(Constants.internalStorageRoot.getUsableSpace()) + "/" + FileUtils.byteCountToDisplaySize(Constants.internalStorageRoot.getTotalSpace()));
+            mTopStorageView.getTabWithId(R.id.menu_internal_storage).setTitle(FileUtils.byteCountToDisplaySize(Constants.internalStorageRoot.getUsableSpace()) + "/" + FileUtils.byteCountToDisplaySize(Constants.internalStorageRoot.getTotalSpace()));
             if (Constants.externalStorageRoot != null)
-                mPathChange.getTabWithId(R.id.menu_external_storage).setTitle(FileUtils.byteCountToDisplaySize(Constants.externalStorageRoot.getUsableSpace()) + "/" + FileUtils.byteCountToDisplaySize(Constants.externalStorageRoot.getTotalSpace()));
+                mTopStorageView.getTabWithId(R.id.menu_external_storage).setTitle(FileUtils.byteCountToDisplaySize(Constants.externalStorageRoot.getUsableSpace()) + "/" + FileUtils.byteCountToDisplaySize(Constants.externalStorageRoot.getTotalSpace()));
         }
     }
 
@@ -212,6 +209,7 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
                         Uri selectedFileUri = Uri.fromFile(f);
                         Intent i = new Intent(Constants.FILE_SELECTED_BROADCAST);
                         i.putExtra(Constants.BROADCAST_SELECTED_FILE, selectedFileUri);
+                        Bundle extras = getIntent().getExtras();
                         if(extras!=null)
                             i.putExtras(extras);
                         sendBroadcast(i);
@@ -242,42 +240,42 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
 
         mSearchViewListener = new SearchViewListener(mAdapter);
 
-        toolbar = (Toolbar) findViewById(R.id.filebrowser_tool_bar);
+        Toolbar toolbar = findViewById(R.id.filebrowser_tool_bar);
         setSupportActionBar(toolbar);
 
-        mBottomView = (BottomBar) findViewById(R.id.bottom_navigation);
-        mPathChange = (BottomBar) findViewById(R.id.currPath_Nav);
+        mBottomView = findViewById(R.id.bottom_navigation);
+        mTopStorageView = findViewById(R.id.currPath_Nav);
 
-        mTabChangeListener = new TabChangeListener(this,mNavigationHelper,mAdapter,io,this);
-        mTabChangeListener.setmRecyclerView(mFilesListView);
+        mTabChangeListener = new TabChangeListener(this, mNavigationHelper, mAdapter, io,this);
 
         mBottomView.setOnTabSelectListener(mTabChangeListener);
         mBottomView.setOnTabReselectListener(mTabChangeListener);
 
-        mPathChange.setOnTabSelectListener(mTabChangeListener);
-        mPathChange.setOnTabReselectListener(mTabChangeListener);
+        mTopStorageView.setOnTabSelectListener(mTabChangeListener);
+        mTopStorageView.setOnTabReselectListener(mTabChangeListener);
 
         mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
-        mPathChange.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
+        mTopStorageView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
+
         onFileChanged(mNavigationHelper.getCurrentDirectory());
 
         //switch to initial directory if given
-        mInitialDirectory = getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
-        if(mInitialDirectory != null && !mInitialDirectory.isEmpty() ) {
-            File initDir = new File(mInitialDirectory);
+        String initialDirectory = getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
+        if (initialDirectory != null && !initialDirectory.isEmpty() ) {
+            File initDir = new File(initialDirectory);
             if (initDir.exists())
                 mNavigationHelper.changeDirectory(initDir);
         }
     }
 
     public void switchMode(Constants.CHOICE_MODE mode) {
-        if(mode== Constants.CHOICE_MODE.SINGLE_CHOICE) {
-            if(mActionMode!=null)
+        if(mode == Constants.CHOICE_MODE.SINGLE_CHOICE) {
+            if(mActionMode != null)
                 mActionMode.finish();
         } else {
-            if(mActionMode==null) {
+            if(mActionMode == null) {
                 closeSearchView();
-                ToolbarActionMode newToolBar = new ToolbarActionMode(this,this,mAdapter,Constants.APP_MODE.FILE_BROWSER,io);
+                ToolbarActionMode newToolBar = new ToolbarActionMode(this,this, mAdapter, Constants.APP_MODE.FILE_BROWSER, io);
                 mActionMode = startSupportActionMode(newToolBar);
                 mActionMode.setTitle(mContext.getString(R.string.select_multiple));
             }
@@ -285,14 +283,14 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
     }
 
     public void changeBottomNavMenu(Constants.CHOICE_MODE multiChoice) {
-        if(multiChoice== Constants.CHOICE_MODE.SINGLE_CHOICE) {
+        if (multiChoice == Constants.CHOICE_MODE.SINGLE_CHOICE) {
             mBottomView.setItems(R.xml.bottom_nav_items);
             mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
-            mPathChange.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
+            mTopStorageView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
         } else {
             mBottomView.setItems(R.xml.bottom_nav_items_multiselect);
             mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
-            mPathChange.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
+            mTopStorageView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
         }
     }
 
@@ -309,17 +307,6 @@ public class FileBrowserWithCustomHandler extends AppCompatActivity implements O
         mFilesListView.setLayoutManager(mLayoutManager);
         mTabChangeListener.setmAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        mAdapter.getFilter().filter(newText);
-        return false;
     }
 
     private void closeSearchView() {

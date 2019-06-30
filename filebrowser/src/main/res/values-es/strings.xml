@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Explorador de archivos</string>
     <string name="cut">Cortar</string>
     <string name="refresh">Refrescar</string>
     <string name="paste">Pegar</string>
@@ -61,6 +62,7 @@
     <string name="selected_items">%d elementos seleccionados</string>
     <string name="selection_error_single">Por favor selecciona solo un elemento</string>
 
+    <string name="permission_request_error">No se solicitan permisos</string>
     <string name="error_common">Error</string>
     <string name="error_no_permissions">Faltan algunos permisos. La aplicación puede no funcionar correctamente. Por favor concede los permisos solicitados.</string>
     <string name="no_operation_error">Ninguna operación seleccionada</string>
@@ -69,6 +71,9 @@
     <string name="select_multiple">Seleccina múltiples archivos</string>
     <string name="external_storage_error">No se puede localizar el almacenamiento externo</string>
     <string name="unselectall">Deseleccionar todo</string>
+    <string name="file_image">imagen de archivo</string>
+    <string name="select">seleccionar</string>
+    <string name="invalid_selections">Selecciones inválidas</string>
 
     <string-array name="filter_options">
         <item>Archivos</item>

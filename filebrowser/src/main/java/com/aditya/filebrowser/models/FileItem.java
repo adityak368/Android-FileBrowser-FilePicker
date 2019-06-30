@@ -11,6 +11,11 @@ import java.io.File;
  * Created by Aditya on 4/15/2017.
  */
 public class FileItem implements ITrackSelection {
+
+    private File file;
+    private boolean isSelected;
+    private String fileSize;
+
     public File getFile() {
         return file;
     }
@@ -26,9 +31,6 @@ public class FileItem implements ITrackSelection {
     public void setFileSize(String fileSize) {
         this.fileSize = fileSize;
     }
-    File file;
-    boolean isSelected;
-    String fileSize;
 
     @Override
     public boolean isSelected() {

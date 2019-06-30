@@ -4,8 +4,8 @@ package com.aditya.filebrowser.utils;
  * Created by Aditya on 4/15/2017.
  */
 
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,8 +13,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.aditya.filebrowser.Constants;
+import com.aditya.filebrowser.R;
 
 import java.util.ArrayList;
 
@@ -27,19 +29,21 @@ public class Permissions extends AppCompatActivity {
     public static final int DENIED = 1;
     public static final int BLOCKED_OR_NEVER_ASKED = 2;
     public static final int GRANTED = 3;
+    private Context mContext;
 
-    public void requestPermissions(String []permissions) {
+    public void requestPermissions(String[] permissions) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             int ungrantedPermCount = 0;
             ArrayList<String> permissionsToBeAsked = new ArrayList<String>();
-            for(int i=0;i< permissions.length;i++) {
-                if(isPermissionIsGranted(permissions[i],this)!=GRANTED) {
+            for(int i=0; i < permissions.length; i++) {
+                if (isPermissionIsGranted(permissions[i],this) != GRANTED) {
                     ungrantedPermCount++;
                     permissionsToBeAsked.add(permissions[i]);
                 }
             }
-            if(ungrantedPermCount==0) {
+            if (ungrantedPermCount == 0) {
                 setResult(Activity.RESULT_OK);
                 finish();
             } else {
@@ -56,13 +60,12 @@ public class Permissions extends AppCompatActivity {
     public static int isPermissionIsGranted(String permission, Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
-                if(!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)){
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)){
                     return BLOCKED_OR_NEVER_ASKED;
                 }
                 return DENIED;
             }
             return GRANTED;
-
         } else {
             return GRANTED;
         }
@@ -71,9 +74,17 @@ public class Permissions extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle b=this.getIntent().getExtras();
+
+        mContext = this;
+
+        Bundle b = this.getIntent().getExtras();
         String[] permissions = b.getStringArray(Constants.APP_PREMISSION_KEY);
-        requestPermissions(permissions);
+        if (permissions != null) {
+            requestPermissions(permissions);
+        } else {
+            Toast.makeText(mContext, mContext.getString(R.string.permission_request_error),Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     @Override
@@ -84,13 +95,13 @@ public class Permissions extends AppCompatActivity {
                 if (grantResults.length > 0) {
 
                     boolean isAllPermissionsGranted = true;
-                    for(int i=0;i<grantResults.length;i++) {
-                        if(grantResults[i]!=PackageManager.PERMISSION_GRANTED) {
+                    for (int i=0; i < grantResults.length; i++) {
+                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                             isAllPermissionsGranted = false;
                             break;
                         }
                     }
-                    if(isAllPermissionsGranted) {
+                    if (isAllPermissionsGranted) {
                         setResult(Activity.RESULT_OK);
                     } else {
                         setResult(Activity.RESULT_CANCELED);
@@ -99,9 +110,7 @@ public class Permissions extends AppCompatActivity {
                 } else {
                     setResult(Activity.RESULT_CANCELED);
                 }
-
                 finish();
-                return;
             }
         }
     }

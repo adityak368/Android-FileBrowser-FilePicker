@@ -6,7 +6,6 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:design="http://schemas.android.com/apk/res-auto"
     tools:context=".FileBrowser">
 
     <include
@@ -19,7 +18,6 @@
         android:id="@+id/address"
         android:orientation="vertical"
         android:layout_below="@+id/filebrowser_tool_bar">
-
 
         <com.beardedhen.androidbootstrap.BootstrapWell
             android:layout_width="match_parent"
@@ -38,7 +36,6 @@
         <com.roughike.bottombar.BottomBar
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
             app:bb_tabXmlResource="@xml/path_change_menu"
             android:id="@+id/currPath_Nav"
             app:bb_showShadow="false"/>

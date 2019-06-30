@@ -52,6 +52,7 @@
     <string name="selected_items">%d Dateien ausgewählt</string>
     <string name="selection_error_single">Bitte nur 1 Datei auswählen</string>
     <string name="error_common">Fehler</string>
+    <string name="permission_request_error">Keine Berechtigungen erforderlich</string>
     <string name="error_no_permissions">Die App besitzt nicht alle erforderlichen Rechte</string>
     <string name="no_operation_error">Keine Aktion ausgewählt</string>
     <string name="no_files_paste">Keine Dateien ausgewählt</string>
@@ -73,4 +74,7 @@
     <string name="sort_by">Sortieren nach</string>
     <string name="file_info">%1$s zul. geändert %2$s</string>
     <string name="unselectall">Alles wiederufen</string>
+    <string name="file_image">Datei Bild</string>
+    <string name="select">wählen</string>
+    <string name="invalid_selections">ungültige Auswahl</string>
 </resources>

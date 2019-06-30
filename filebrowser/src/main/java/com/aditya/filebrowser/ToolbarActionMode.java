@@ -24,16 +24,16 @@ import java.util.List;
  */
 public class ToolbarActionMode implements ActionMode.Callback{
 
-    CustomAdapter mAdapter;
-    IContextSwitcher mIContextSwitcher;
-    Constants.APP_MODE appMode;
-    Activity mActivity;
-    FileIO io;
+    private CustomAdapter mAdapter;
+    private IContextSwitcher mIContextSwitcher;
+    private Constants.APP_MODE appMode;
+    private Activity mActivity;
+    private FileIO io;
 
     private SearchView mSearchView;
     private MenuItem mSearchMenuItem;
 
-    public ToolbarActionMode(Activity mActivity, IContextSwitcher mIContextSwitcher, CustomAdapter mAdapter, Constants.APP_MODE mode, FileIO io) {
+    ToolbarActionMode(Activity mActivity, IContextSwitcher mIContextSwitcher, CustomAdapter mAdapter, Constants.APP_MODE mode, FileIO io) {
         this.mAdapter = mAdapter;
         this.mIContextSwitcher = mIContextSwitcher;
         this.appMode = mode;
@@ -43,9 +43,9 @@ public class ToolbarActionMode implements ActionMode.Callback{
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        if(this.appMode== Constants.APP_MODE.FILE_BROWSER)
+        if (this.appMode == Constants.APP_MODE.FILE_BROWSER)
             mode.getMenuInflater().inflate(R.menu.toolbar_multiselect_menu, menu);//Inflate the menu over action mode
-        else if(this.appMode== Constants.APP_MODE.FILE_CHOOSER)
+        else if (this.appMode == Constants.APP_MODE.FILE_CHOOSER || this.appMode == Constants.APP_MODE.FOLDER_CHOOSER )
             mode.getMenuInflater().inflate(R.menu.toolbar_multiselect_menu_filechooser, menu);//Inflate the menu over action mode
 
         return true;
@@ -70,17 +70,17 @@ public class ToolbarActionMode implements ActionMode.Callback{
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         List<FileItem> selectedItems = mAdapter.getSelectedItems();;
-        if(item.getItemId()==R.id.action_properties) {
+        if (item.getItemId() == R.id.action_properties) {
             if (io != null)
                 io.getProperties(selectedItems);
             mode.finish();
         }
-        else if(item.getItemId()==R.id.action_share) {
+        else if (item.getItemId() == R.id.action_share) {
             if (io != null)
                 io.shareMultipleFiles(selectedItems);
             mode.finish();//Finish action mode
         }
-        else if(item.getItemId()==R.id.action_rename) {
+        else if (item.getItemId() == R.id.action_rename) {
             if (selectedItems.size() != 1) {
                 UIUtils.ShowToast(mActivity.getString(R.string.selection_error_single), mActivity);
                 return false;
@@ -92,10 +92,10 @@ public class ToolbarActionMode implements ActionMode.Callback{
             io.renameFile(selectedItems.get(0));
             mode.finish();//Finish action mode
         }
-        else if(item.getItemId()==R.id.action_selectall) {
+        else if (item.getItemId() == R.id.action_selectall) {
             mAdapter.selectAll();
         }
-        else if(item.getItemId()==R.id.action_unselectall) {
+        else if (item.getItemId() == R.id.action_unselectall) {
             mAdapter.unSelectAll();
         }
         return false;

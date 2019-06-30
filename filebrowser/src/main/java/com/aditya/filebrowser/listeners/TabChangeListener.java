@@ -18,8 +18,6 @@ import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.UIUtils;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScroller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ import java.util.List;
 /**
  * Created by Aditya on 4/18/2017.
  */
-public class TabChangeListener implements OnTabSelectListener,OnTabReselectListener {
+public class TabChangeListener implements OnTabSelectListener, OnTabReselectListener {
 
     private NavigationHelper mNavigationHelper;
     private CustomAdapter mAdapter;
@@ -35,7 +33,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
     private FileIO io;
     private IContextSwitcher mIContextSwitcher;
     private Constants.SELECTION_MODES selectionMode;
-    private FastScrollRecyclerView mRecyclerView;
+    private Constants.APP_MODE appMode;
 
     public TabChangeListener(Activity mActivity, NavigationHelper mNavigationHelper, CustomAdapter mAdapter, FileIO io, IContextSwitcher mContextSwtcher) {
         this.mNavigationHelper = mNavigationHelper;
@@ -44,6 +42,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
         this.io = io;
         this.mIContextSwitcher = mContextSwtcher;
         this.selectionMode = Constants.SELECTION_MODES.SINGLE_SELECTION;
+        this.appMode = Constants.APP_MODE.FILE_CHOOSER;
     }
 
     @Override
@@ -58,19 +57,19 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
 
     private void handleTabChange(int tabId) {
 
-            if(tabId==R.id.menu_back) {
+            if (tabId == R.id.menu_back) {
                 mNavigationHelper.navigateBack();
             }
-            else if(tabId==R.id.menu_internal_storage) {
+            else if (tabId == R.id.menu_internal_storage) {
                 mNavigationHelper.navigateToInternalStorage();
             }
-            else if(tabId==R.id.menu_external_storage) {
+            else if (tabId == R.id.menu_external_storage) {
                 mNavigationHelper.navigateToExternalStorage();
             }
-            else if(tabId==R.id.menu_refresh) {
+            else if (tabId == R.id.menu_refresh) {
                 mNavigationHelper.triggerFileChanged();
             }
-            else if(tabId==R.id.menu_filter) {
+            else if (tabId == R.id.menu_filter) {
                 UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.filter_options), mActivity.getString(R.string.filter_only), new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int position) {
@@ -82,31 +81,26 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                     }
                 });
             }
-            else if(tabId==R.id.menu_sort) {
+            else if (tabId == R.id.menu_sort) {
                 UIUtils.showRadioButtonDialog(mActivity, mActivity.getResources().getStringArray(R.array.sort_options), mActivity.getString(R.string.sort_by), new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int position) {
                         Operations op = Operations.getInstance(mActivity);
                         if (op != null) {
                             op.setmCurrentSortOption(Constants.SORT_OPTIONS.values()[position]);
-                            if(Constants.SORT_OPTIONS.values()[position]== Constants.SORT_OPTIONS.LAST_MODIFIED || Constants.SORT_OPTIONS.values()[position]== Constants.SORT_OPTIONS.SIZE) {
-                                setFastScrollVisibility(false);
-                            } else {
-                                setFastScrollVisibility(true);
-                            }
                         }
                         mNavigationHelper.triggerFileChanged();
                     }
                 });
             }
-            else if(tabId==R.id.menu_delete) {
+            else if (tabId == R.id.menu_delete) {
                 List<FileItem> selectedItems = mAdapter.getSelectedItems();
                 if (io != null) {
                     io.deleteItems(selectedItems);
                     mIContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
                 }
             }
-            else if(tabId==R.id.menu_copy) {
+            else if (tabId == R.id.menu_copy) {
                 Operations op = Operations.getInstance(mActivity);
                 if (op != null) {
                     op.setOperation(Operations.FILE_OPERATIONS.COPY);
@@ -114,7 +108,7 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                     mIContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
                 }
             }
-            else if(tabId==R.id.menu_cut) {
+            else if (tabId == R.id.menu_cut) {
                 Operations op = Operations.getInstance(mActivity);
                 if (op != null) {
                     op.setOperation(Operations.FILE_OPERATIONS.CUT);
@@ -122,16 +116,30 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                     mIContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
                 }
             }
-            else if(tabId==R.id.menu_chooseitems) {
+            else if (tabId == R.id.menu_chooseitems) {
                 {
                     List<FileItem> selItems = getmAdapter().getSelectedItems();
                     ArrayList<Uri> chosenItems = new ArrayList<>();
+                    boolean hasInvalidSelections = false;
                     for (int i = 0; i < selItems.size(); i++) {
-                        chosenItems.add(Uri.fromFile(selItems.get(i).getFile()));
+                        if (getAppMode() == Constants.APP_MODE.FOLDER_CHOOSER) {
+                            if (selItems.get(i).getFile().isDirectory()) {
+                                chosenItems.add(Uri.fromFile(selItems.get(i).getFile()));
+                            } else {
+                                hasInvalidSelections = true;
+                            }
+                        } else {
+                            chosenItems.add(Uri.fromFile(selItems.get(i).getFile()));
+                        }
                     }
+                    if (hasInvalidSelections) {
+                        UIUtils.ShowToast(mActivity.getString(R.string.invalid_selections),mActivity);
+                        mActivity.finish();
+                    }
+
                     mIContextSwitcher.switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
-                    if(getSelectionMode()== Constants.SELECTION_MODES.SINGLE_SELECTION) {
-                        if(chosenItems.size()==1) {
+                    if(getSelectionMode() == Constants.SELECTION_MODES.SINGLE_SELECTION) {
+                        if(chosenItems.size() == 1) {
                             Intent data = new Intent();
                             data.setData(chosenItems.get(0));
                             mActivity.setResult(Activity.RESULT_OK, data);
@@ -146,19 +154,13 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
                         mActivity.finish();
                     }
                 }
+            } else if (tabId == R.id.menu_select) {
+                Uri fileUri = Uri.fromFile(mNavigationHelper.getCurrentDirectory());
+                Intent data = new Intent();
+                data.setData(fileUri);
+                mActivity.setResult(Activity.RESULT_OK, data);
+                mActivity.finish();
             }
-    }
-
-    private void setFastScrollVisibility(boolean visible) {
-        if(getmRecyclerView()!=null) {
-            if (visible) {
-                getmRecyclerView().setPopupBgColor(ContextCompat.getColor(mActivity, android.R.color.black));
-                getmRecyclerView().setPopupTextSize(150);
-             } else {
-                getmRecyclerView().setPopupBgColor(ContextCompat.getColor(mActivity, android.R.color.transparent));
-                getmRecyclerView().setPopupTextSize(0);
-            }
-        }
     }
 
     public CustomAdapter getmAdapter() {
@@ -177,11 +179,11 @@ public class TabChangeListener implements OnTabSelectListener,OnTabReselectListe
         this.selectionMode = selectionMode;
     }
 
-    public FastScrollRecyclerView getmRecyclerView() {
-        return mRecyclerView;
+    public Constants.APP_MODE getAppMode() {
+        return appMode;
     }
 
-    public void setmRecyclerView(FastScrollRecyclerView mRecyclerView) {
-        this.mRecyclerView = mRecyclerView;
+    public void setAppMode(Constants.APP_MODE appMode) {
+        this.appMode = appMode;
     }
 }
