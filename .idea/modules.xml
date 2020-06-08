@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Android-FileBrowser-FilePicker.iml" filepath="$PROJECT_DIR$/.idea/modules/Android-FileBrowser-FilePicker.iml" group="Android-FileBrowser-FilePicker" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/filebrowser/filebrowser.iml" filepath="$PROJECT_DIR$/.idea/modules/filebrowser/filebrowser.iml" group="Android-FileBrowser-FilePicker/filebrowser" />
-    </modules>
-  </component>
-</project>
