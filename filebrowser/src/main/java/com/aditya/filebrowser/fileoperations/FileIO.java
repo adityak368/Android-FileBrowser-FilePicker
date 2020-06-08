@@ -66,6 +66,25 @@ public class FileIO {
         }
     }
 
+    public void createNewFile(final File path) {
+        if(path.getParentFile()!=null && path.getParentFile().canWrite()) {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        path.createNewFile();
+                        mUIUpdateHandler.post(mHelper.updateRunner());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        mUIUpdateHandler.post(mHelper.errorRunner(mContext.getString(R.string.file_creation_error)));
+                    }
+                }
+            });
+        } else {
+            UIUtils.ShowToast(mContext.getString(R.string.permission_error),mContext);
+        }
+    }
+
     public void deleteItems(final List<FileItem> selectedItems) {
         if(selectedItems!=null && selectedItems.size()>0) {
             AlertDialog confirmDialog = new AlertDialog.Builder(mContext)

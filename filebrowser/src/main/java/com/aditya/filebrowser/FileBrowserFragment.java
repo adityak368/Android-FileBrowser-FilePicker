@@ -1,11 +1,6 @@
 package com.aditya.filebrowser;
 
-/**
- * Created by Aditya on 4/15/2017.
- */
-
-import android.app.Activity;
-import android.app.SearchManager;
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -13,15 +8,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,11 +30,8 @@ import com.aditya.filebrowser.fileoperations.Operations;
 import com.aditya.filebrowser.interfaces.IContextSwitcher;
 import com.aditya.filebrowser.interfaces.IFuncPtr;
 import com.aditya.filebrowser.listeners.OnFileChangedListener;
-import com.aditya.filebrowser.listeners.SearchViewListener;
 import com.aditya.filebrowser.listeners.TabChangeListener;
 import com.aditya.filebrowser.models.FileItem;
-import com.aditya.filebrowser.utils.AssortedUtils;
-import com.aditya.filebrowser.utils.Permissions;
 import com.aditya.filebrowser.utils.UIUtils;
 import com.roughike.bottombar.BottomBar;
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener;
@@ -53,14 +47,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
-public class FileBrowser extends AppCompatActivity implements OnFileChangedListener,IContextSwitcher {
-
+public class FileBrowserFragment extends Fragment implements OnFileChangedListener, IContextSwitcher {
     private Context mContext;
     private CustomAdapter mAdapter;
     private FastScrollRecyclerView.LayoutManager mLayoutManager;
     private FastScrollRecyclerView mFilesListView;
-
     private BottomBar mBottomView;
     private BottomBar mTopStorageView;
     private TabChangeListener mTabChangeListener;
@@ -72,25 +63,16 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
 
     //Action Mode for filebrowser_toolbar
     private static ActionMode mActionMode;
-    private static final int APP_PERMISSION_REQUEST = 0;
 
-    private SearchView mSearchView;
-    private MenuItem mSearchMenuItem;
-    private SearchViewListener mSearchViewListener;
     private List<FileItem> mFileList = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.filebrowser_activity_frag, container, false);
+        mContext = getActivity();
+        setHasOptionsMenu(true);
 
-        mContext = this;
-
-        // Get File Storage Permission
-        Intent in = new Intent(this, Permissions.class);
-        Bundle bundle = new Bundle();
-        bundle.putStringArray(Constants.APP_PREMISSION_KEY, Constants.APP_PREMISSIONS);
-        in.putExtras(bundle);
-        startActivityForResult(in, APP_PERMISSION_REQUEST);
+        //TODO: let user create permissions check on main
 
         // Initialize Stuff
         mNavigationHelper = new NavigationHelper(mContext);
@@ -99,84 +81,62 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         op = Operations.getInstance(mContext);
 
         //set file filter (i.e display files with the given extension)
-        String filterFilesWithExtension = getIntent().getStringExtra(Constants.ALLOWED_FILE_EXTENSIONS);
+        String filterFilesWithExtension = getActivity().getIntent().getStringExtra(Constants.ALLOWED_FILE_EXTENSIONS);
         if (filterFilesWithExtension != null && !filterFilesWithExtension.isEmpty()) {
             Set<String> allowedFileExtensions = new HashSet<String>(Arrays.asList(filterFilesWithExtension.split(";")));
             mNavigationHelper.setAllowedFileExtensionFilter(allowedFileExtensions);
         }
 
         mFileList = mNavigationHelper.getFilesItemsInCurrentDirectory();
+
+        loadUi(root);
+        return root;
     }
 
-    @Override
-    public void onBackPressed() {
-
-        if (mAdapter.getChoiceMode() == Constants.CHOICE_MODE.MULTI_CHOICE) {
-            switchMode(Constants.CHOICE_MODE.SINGLE_CHOICE);
-            return;
-        }
-
-        if (!mNavigationHelper.navigateBack()) {
-            super.onBackPressed();
-        }
-    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == APP_PERMISSION_REQUEST) {
-            if (resultCode != Activity.RESULT_OK)
-                Toast.makeText(mContext, mContext.getString(R.string.error_no_permissions), Toast.LENGTH_LONG).show();
-            loadUi();
+    public void changeBottomNavMenu(Constants.CHOICE_MODE multiChoice) {
+        if (multiChoice == Constants.CHOICE_MODE.SINGLE_CHOICE) {
+            mBottomView.setItems(R.xml.bottom_nav_items);
+            mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
+            mTopStorageView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
+        } else {
+            mBottomView.setItems(R.xml.bottom_nav_items_multiselect);
+            mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
+            mTopStorageView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_default_menu, menu);
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchMenuItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView)mSearchMenuItem.getActionView();
-        // Assumes current activity is the searchable activity
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        //searchView.setSubmitButtonEnabled(true);
-        mSearchView.setOnQueryTextListener(mSearchViewListener);
-        return true;
+    public void setNullToActionMode() {
+        if (mActionMode != null)
+            mActionMode = null;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void reDrawFileList() {
+        mFilesListView.setLayoutManager(null);
+        mFilesListView.setAdapter(mAdapter);
+        mFilesListView.setLayoutManager(mLayoutManager);
+        mTabChangeListener.setmAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
 
-        if (item.getItemId() == R.id.action_showfoldersizes) {
 
-            if (AssortedUtils.GetPrefs(Constants.SHOW_FOLDER_SIZE, mContext).equalsIgnoreCase("true"))
-                AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "false", mContext);
-            else
-                AssortedUtils.SavePrefs(Constants.SHOW_FOLDER_SIZE, "true", mContext);
+    @Override
+    public void switchMode(Constants.CHOICE_MODE mode) {
+        if (mode == Constants.CHOICE_MODE.SINGLE_CHOICE) {
+            if (mActionMode != null)
+                mActionMode.finish();
+        } else {
+            if(mActionMode == null) {
+                ToolbarActionMode newToolBar = new ToolbarActionMode(getActivity(),
+                        this, mAdapter, Constants.APP_MODE.FILE_BROWSER, io);
 
-            onFileChanged(mNavigationHelper.getCurrentDirectory());
-        }
-        else if (item.getItemId() == R.id.action_newfolder) {
-            UIUtils.showEditTextDialog(this, getString(R.string.new_folder), "", new IFuncPtr(){
-                @Override
-                public void execute(final String val) {
-                    io.createDirectory(new File(mNavigationHelper.getCurrentDirectory(),val.trim()));
-                }
-            });
-        }
-        else if (item.getItemId() == R.id.action_paste) {
-            if (op.getOperation() == Operations.FILE_OPERATIONS.NONE) {
-                UIUtils.ShowToast(mContext.getString(R.string.no_operation_error), mContext);
+                mActionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(newToolBar);
+                mActionMode.setTitle(mContext.getString(R.string.select_multiple));
             }
-            if (op.getSelectedFiles() == null) {
-                UIUtils.ShowToast(mContext.getString(R.string.no_files_paste), mContext);
-            }
-            io.pasteFiles(mNavigationHelper.getCurrentDirectory());
         }
-
-        return false;
     }
 
     @Override
@@ -191,23 +151,51 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         }
     }
 
-    private void loadUi() {
-        setContentView(R.layout.filebrowser_activity_main);
+    private void loadUi(View v) {
+        getActivity().setContentView(R.layout.filebrowser_activity_main);
 
-        mCurrentPath = findViewById(R.id.currentPath);
-        mFilesListView = findViewById(R.id.recycler_view);
+        v.findViewById(R.id.menu_newfolder).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIUtils.showEditTextDialog(getActivity(),
+                        getString(R.string.new_folder), "", new IFuncPtr(){
+                    @Override
+                    public void execute(final String val) {
+                        io.createDirectory(new File(mNavigationHelper.getCurrentDirectory(),val.trim()));
+                    }
+                });
+            }
+        });
+
+        v.findViewById(R.id.menu_new_file).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIUtils.showEditTextDialog(getActivity(),
+                        getString(R.string.new_file), "", new IFuncPtr(){
+                            @Override
+                            public void execute(final String val) {
+                                io.createNewFile(new File(mNavigationHelper.getCurrentDirectory(),val.trim()));
+                            }
+                        });
+            }
+        });
+
+
+        mCurrentPath = v.findViewById(R.id.currentPathFB);
+        mFilesListView = v.findViewById(R.id.recycler_view);
         mAdapter = new CustomAdapter(mFileList,mContext);
         mFilesListView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(mContext);
         mFilesListView.setLayoutManager(mLayoutManager);
-        final CustomAdapterItemClickListener onItemClickListener = new CustomAdapterItemClickListener(mContext, mFilesListView, new CustomAdapterItemClickListener.OnItemClickListener() {
+        final CustomAdapterItemClickListener onItemClickListener =
+                new CustomAdapterItemClickListener(mContext, mFilesListView,
+                new CustomAdapterItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 // TODO Handle item click
                 if (mAdapter.getChoiceMode()== Constants.CHOICE_MODE.SINGLE_CHOICE) {
                     File f = mAdapter.getItemAt(position).getFile();
                     if (f.isDirectory()) {
-                        closeSearchView();
                         mNavigationHelper.changeDirectory(f);
                     } else {
                         MimeTypeMap mimeMap = MimeTypeMap.getSingleton();
@@ -247,15 +235,14 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
             }
         });
 
-        mSearchViewListener = new SearchViewListener(mAdapter);
+        Toolbar toolbar = v.findViewById(R.id.filebrowser_tool_bar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        Toolbar toolbar = findViewById(R.id.filebrowser_tool_bar);
-        setSupportActionBar(toolbar);
+        mBottomView = v.findViewById(R.id.bottom_navigation);
+        mTopStorageView = v.findViewById(R.id.currPath_Nav);
 
-        mBottomView = findViewById(R.id.bottom_navigation);
-        mTopStorageView = findViewById(R.id.currPath_Nav);
-
-        mTabChangeListener = new TabChangeListener(this, mNavigationHelper, mAdapter, io,this);
+        mTabChangeListener = new TabChangeListener(getActivity(),
+                mNavigationHelper, mAdapter, io,this);
 
         mBottomView.setOnTabSelectListener(mTabChangeListener);
         mBottomView.setOnTabReselectListener(mTabChangeListener);
@@ -269,65 +256,45 @@ public class FileBrowser extends AppCompatActivity implements OnFileChangedListe
         onFileChanged(mNavigationHelper.getCurrentDirectory());
 
         //switch to initial directory if given
-        String initialDirectory = getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
+        String initialDirectory = getActivity().getIntent().getStringExtra(Constants.INITIAL_DIRECTORY);
         if (initialDirectory != null && !initialDirectory.isEmpty() ) {
             File initDir = new File(initialDirectory);
             if (initDir.exists())
                 mNavigationHelper.changeDirectory(initDir);
         }
 
+        final TextView editSearchFrag = v.findViewById(R.id.editFBFragSearch);
 
-    }
+        editSearchFrag.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-    @Override
-    public void switchMode(Constants.CHOICE_MODE mode) {
-        if (mode == Constants.CHOICE_MODE.SINGLE_CHOICE) {
-            if (mActionMode != null)
-                mActionMode.finish();
-        } else {
-            if(mActionMode == null) {
-                closeSearchView();
-                ToolbarActionMode newToolBar = new ToolbarActionMode(this,
-                        this, mAdapter, Constants.APP_MODE.FILE_BROWSER, io);
-                mActionMode = startSupportActionMode(newToolBar);
-                mActionMode.setTitle(mContext.getString(R.string.select_multiple));
             }
-        }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        v.findViewById(R.id.btnFBFragSearch)
+                .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isSearchOpen = mCurrentPath.getVisibility() == View.GONE;
+                editSearchFrag.setText("");
+                editSearchFrag.setVisibility(isSearchOpen ? View.GONE : View.VISIBLE);
+                mCurrentPath.setVisibility(isSearchOpen ? View.VISIBLE : View.GONE);
+                mAdapter.getFilter().filter("");
+                v.setBackgroundResource(isSearchOpen
+                        ? R.drawable.ic_search_black_24
+                        :R.drawable.ic_round_close_24_black);
+            }
+        });
     }
 
-    @Override
-    public void changeBottomNavMenu(Constants.CHOICE_MODE multiChoice) {
-        if (multiChoice == Constants.CHOICE_MODE.SINGLE_CHOICE) {
-            mBottomView.setItems(R.xml.bottom_nav_items);
-            mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
-            mTopStorageView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
-        } else {
-            mBottomView.setItems(R.xml.bottom_nav_items_multiselect);
-            mBottomView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
-            mTopStorageView.getTabWithId(R.id.menu_none).setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void setNullToActionMode() {
-        if (mActionMode != null)
-            mActionMode = null;
-    }
-
-    @Override
-    public void reDrawFileList() {
-        mFilesListView.setLayoutManager(null);
-        mFilesListView.setAdapter(mAdapter);
-        mFilesListView.setLayoutManager(mLayoutManager);
-        mTabChangeListener.setmAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void closeSearchView() {
-        if (mSearchView.isShown()) {
-            mSearchView.setQuery("", false);
-            mSearchMenuItem.collapseActionView();
-            mSearchView.setIconified(true);
-        }
-    }
 }

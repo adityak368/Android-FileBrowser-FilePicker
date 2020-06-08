@@ -12,6 +12,7 @@
     <string name="rename">Rename</string>
     <string name="share">Share</string>
     <string name="new_folder">New Folder</string>
+    <string name="new_file">New File</string>
     <string name="root">Root</string>
     <string name="back">Back</string>
     <string name="show_hidden_folders">Show Hidden Folders</string>
@@ -75,6 +76,7 @@
     <string name="file_image">File Image</string>
     <string name="select">Select</string>
     <string name="invalid_selections">Invalid selections</string>
+    <string name="file_creation_error">Error cannot write file. Please check you have permissions to write to this directory</string>
     <string-array name="filter_options">
         <item>Files</item>
         <item>Folders</item>

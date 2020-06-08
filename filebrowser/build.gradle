@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.adityak'
     PUBLISH_ARTIFACT_ID = 'browsemyfiles'
-    PUBLISH_VERSION = '1.9'
+    PUBLISH_VERSION = '2.0'
 }
 
 android {
@@ -16,6 +16,7 @@ android {
         targetSdkVersion 27
         versionCode 11
         versionName "1.9"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {

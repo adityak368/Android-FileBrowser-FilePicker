@@ -1,19 +1,14 @@
 package com.aditya.filebrowser;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.aditya.filebrowser.Constants;
-import com.aditya.filebrowser.fileoperations.FileIO;
-import com.aditya.filebrowser.R;
 import com.aditya.filebrowser.adapters.CustomAdapter;
+import com.aditya.filebrowser.fileoperations.FileIO;
 import com.aditya.filebrowser.interfaces.IContextSwitcher;
-import com.aditya.filebrowser.listeners.SearchViewListener;
 import com.aditya.filebrowser.models.FileItem;
 import com.aditya.filebrowser.utils.UIUtils;
 

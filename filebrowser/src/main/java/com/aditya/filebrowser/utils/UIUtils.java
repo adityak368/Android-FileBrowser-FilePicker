@@ -109,13 +109,19 @@ public class UIUtils {
 				.setView(v)
 				.create();
 
-		BootstrapButton okButton = (BootstrapButton) v.findViewById(R.id.okbutton);
 		final BootstrapEditText insertedText = (BootstrapEditText) v.findViewById(R.id.addedText);
 		insertedText.setText(initialText);
-		okButton.setOnClickListener(new View.OnClickListener() {
+		v.findViewById(R.id.okbutton).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				functionToBeRun.execute(insertedText.getText().toString());
+				dialog.dismiss();
+			}
+		});
+
+		v.findViewById(R.id.cancelbutton).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
 				dialog.dismiss();
 			}
 		});

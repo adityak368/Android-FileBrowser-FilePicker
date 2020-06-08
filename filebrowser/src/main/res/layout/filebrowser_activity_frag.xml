@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FileBrowser">
+
+    <include
+        android:id="@+id/filebrowser_tool_bar"
+        layout="@layout/filebrowser_toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/address"
+        android:orientation="vertical"
+        android:layout_below="@+id/filebrowser_tool_bar">
+
+        <com.beardedhen.androidbootstrap.BootstrapWell
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_margin="8dp"
+            app:bootstrapSize="sm">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    android:id="@+id/currentPathFB"/>
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    android:hint="Search..."
+                    android:visibility="gone"
+                    android:id="@+id/editFBFragSearch"/>
+
+                <ImageView
+                    android:id="@+id/btnFBFragSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:background="@drawable/ic_search_black_24" />
+            </TableRow>
+
+
+        </com.beardedhen.androidbootstrap.BootstrapWell>
+
+        <com.roughike.bottombar.BottomBar
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:bb_tabXmlResource="@xml/path_change_menu"
+            android:id="@+id/currPath_Nav"
+            app:bb_showShadow="false"/>
+
+    </LinearLayout>
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+        app:fastScrollAutoHide="true"
+        app:fastScrollAutoHideDelay="1500"
+        android:id="@+id/recycler_view"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/address"
+        android:layout_above="@+id/bottom_navigation"/>
+
+<com.roughike.bottombar.BottomBar
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        app:bb_tabXmlResource="@xml/bottom_nav_items_frag"
+        android:id="@+id/bottom_navigation"/>
+
+</RelativeLayout>
