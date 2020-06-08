@@ -15,7 +15,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 27
         versionCode 11
-        versionName "1.9"
+        versionName "2.0"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
